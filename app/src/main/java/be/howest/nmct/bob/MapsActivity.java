@@ -11,6 +11,7 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -40,6 +41,14 @@ public class MapsActivity extends FragmentActivity
 
         _drawerLayout = (DrawerLayout) findViewById(R.id.drawer_menu);
         btnAddParty = (ImageButton) findViewById(R.id.btnAddParty);
+        btnAddParty.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showAddNewPartyFragment(v);
+            }
+        });
 
 
         //Add MapFragment (in code)
@@ -55,6 +64,20 @@ public class MapsActivity extends FragmentActivity
 
         //set the callback on the fragment
         _mapFragment.getMapAsync(this);
+    }
+
+
+    private void showAddNewPartyFragment(View v)
+    {
+        //fragment ophalen
+        AddNewPartyFragment anpFragment = AddNewPartyFragment.newInstance(_lastKnownLocation);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.container, anpFragment)
+                .addToBackStack("ShowAddNewPartyFragment")
+                .commit();
+
+        setTitle("Add new party");
     }
 
 
@@ -79,8 +102,7 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onLocationChanged(Location location)
             {
-                MarkerOptions options = new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude())).title("You are here");
-                googleMap.addMarker(options);
+
             }
 
             @Override
@@ -107,8 +129,12 @@ public class MapsActivity extends FragmentActivity
         //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-        Location lastKnownLocation = _locationManager.getLastKnownLocation(_bestProvider);
-        if (lastKnownLocation != null) _locationListener.onLocationChanged(lastKnownLocation);
+        _lastKnownLocation = _locationManager.getLastKnownLocation(_bestProvider);
+        if (_lastKnownLocation != null)
+        {
+            MarkerOptions options = new MarkerOptions().position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude())).title("You are here");
+            googleMap.addMarker(options);
+        }
     }
 
 
