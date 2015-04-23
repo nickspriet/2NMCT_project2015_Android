@@ -31,7 +31,9 @@ public class MapsActivity extends FragmentActivity
 
     private LocationManager _locationManager;
     private LocationListener _locationListener;
+    private Location _lastKnownLocation;
     private String _bestProvider;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,11 +54,11 @@ public class MapsActivity extends FragmentActivity
 
 
         //Add MapFragment (in code)
-//        if (savedInstanceState == null)
-//        {
-//            _mapFragment = MapFragment.newInstance();
-//            getFragmentManager().beginTransaction().add(R.id.container, _mapFragment, "map").commit();
-//        }
+        if (savedInstanceState == null)
+        {
+            _mapFragment = MapFragment.newInstance();
+            getFragmentManager().beginTransaction().add(R.id.container, _mapFragment, "map").commit();
+        }
 
 
         //fragment ophalen
