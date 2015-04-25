@@ -209,7 +209,7 @@ public class MapsActivity extends FragmentActivity
     protected void onResume()
     {
         super.onResume();
-        if (_locationManager != null) _locationManager.requestLocationUpdates(_bestProvider, 0, 0, _locationListener);
+        //if (_locationManager != null) _locationManager.requestLocationUpdates(_bestProvider, 0, 0, _locationListener);
     }
 
     @Override
