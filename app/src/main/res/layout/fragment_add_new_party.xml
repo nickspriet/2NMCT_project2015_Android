@@ -1,13 +1,160 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="be.howest.nmct.bob.AddNewPartyFragment">
+<ScrollView
+    android:id="@+id/add_new_party_fragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="be.howest.nmct.bob.AddNewPartyFragment"
+    android:fillViewport="true">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment"/>
+        android:id="@+id/">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/imgPartyPicture"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="left|top"
+            android:background="#ffc7c7c7"/>
+
+        <EditText
+            android:id="@+id/etPartyName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imgPartyPicture"
+            android:layout_alignParentStart="true"
+            android:layout_margin="16dp"
+            android:layout_marginStart="27dp"
+            android:capitalize="characters"
+            android:hint="Name of the party"
+            android:textColor="#ffffffff"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/etDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/etPartyName"
+            android:layout_alignStart="@+id/etPartyName"
+            android:layout_below="@+id/imgPartyPicture"
+            android:layout_marginTop="16dp"
+            android:ems="10"
+            android:hint="Add extra information"
+            android:inputType="textMultiLine"
+            />
+
+        <TextView
+            android:id="@+id/tvAddress"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etDescription"
+            android:layout_marginTop="32dp"
+            android:text="Address"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"/>
+
+        <EditText
+            android:id="@+id/etStreet"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvAddress"
+            android:layout_alignStart="@+id/tvAddress"
+            android:layout_below="@+id/tvAddress"
+            android:layout_marginTop="8dp"
+            android:hint="Examplestreet 123"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"/>
+
+        <EditText
+            android:id="@+id/etZipcode"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/etStreet"
+            android:layout_below="@+id/etStreet"
+            android:layout_marginTop="8dp"
+            android:hint="Zipcode"
+            android:inputType="textPostalAddress"/>
+
+        <EditText
+            android:id="@+id/etCity"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/etDescription"
+            android:layout_below="@+id/etStreet"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/etZipcode"
+            android:hint="City"/>
+
+        <TextView
+            android:id="@+id/tvWhen"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/etZipcode"
+            android:layout_marginTop="32dp"
+            android:text="When"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"/>
+
+        <TextView
+            android:id="@+id/tvFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvWhen"
+            android:layout_below="@+id/tvWhen"
+            android:layout_marginTop="8dp"
+            android:text="From: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginLeft="16dp"/>
+
+        <TextView
+            android:id="@+id/tvUntil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/tvFrom"
+            android:layout_below="@+id/tvFrom"
+            android:layout_marginTop="8dp"
+            android:text="Until: "
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/tvDJs"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvWhen"
+            android:layout_below="@+id/tvUntil"
+            android:layout_marginTop="32dp"
+            android:text="DJ&apos;s"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentStart="true"/>
+
+        <ImageView
+            android:id="@+id/imgLogoDJ"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignStart="@+id/tvDJs"
+            android:layout_below="@+id/tvDJs"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"/>
+
+        <EditText
+            android:id="@+id/etDiskJockey"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvWhen"
+            android:layout_alignTop="@+id/imgLogoDJ"
+            android:layout_marginLeft="16dp"
+            android:layout_toEndOf="@+id/imgLogoDJ"
+            android:hint="Disk Jockey 1"
+            android:layout_marginRight="16dp"/>
+
+    </RelativeLayout>
+
+</ScrollView>

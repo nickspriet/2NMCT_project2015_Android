@@ -1,12 +1,14 @@
 package be.howest.nmct.bob;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.opengl.Visibility;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -49,6 +51,9 @@ public class MapsActivity extends FragmentActivity
             public void onClick(View v)
             {
                 showAddNewPartyFragment(v);
+
+                //hide button
+                btnAddParty.setVisibility(v.INVISIBLE);
             }
         });
 
@@ -57,12 +62,12 @@ public class MapsActivity extends FragmentActivity
         if (savedInstanceState == null)
         {
             _mapFragment = MapFragment.newInstance();
-            getFragmentManager().beginTransaction().add(R.id.container, _mapFragment, "map").commit();
+            getFragmentManager().beginTransaction().add(R.id.container, _mapFragment, "mapfrag").commit();
         }
 
 
         //fragment ophalen
-        _mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        //_mapFragment = (MapFragment) getFragmentManager().findFragmentByTag("mapfrag");
 
         //set the callback on the fragment
         _mapFragment.getMapAsync(this);
@@ -72,7 +77,9 @@ public class MapsActivity extends FragmentActivity
     private void showAddNewPartyFragment(View v)
     {
         //fragment ophalen
-        AddNewPartyFragment anpFragment = AddNewPartyFragment.newInstance(_lastKnownLocation);
+        AddNewPartyFragment anpFragment =  AddNewPartyFragment.newInstance(_lastKnownLocation);
+
+        getFragmentManager().popBackStack();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, anpFragment)
