@@ -1,0 +1,28 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="be.howest.nmct.bob.MenuFragment">
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/menu_header"
+        android:id="@+id/imgMenuHeader"
+        android:layout_gravity="top|left"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitEnd"
+        android:background="#ffffdd17"/>
+
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@android:id/list"
+        android:layout_below="@+id/imgMenuHeader"
+        android:layout_alignEnd="@+id/imgMenuHeader"
+        android:layout_alignParentStart="true"
+        android:background="#ffffffff"/>
+
+</RelativeLayout>

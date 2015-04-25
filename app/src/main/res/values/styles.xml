@@ -1,0 +1,32 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="ThemeBOB" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/ActionBarBOB</item>
+
+        <item name="android:colorPrimary">#ff0f67b0</item>
+        <item name="android:colorPrimaryDark">#ff0f67b0</item>
+        <item name="android:colorAccent">#ff0f67b0</item>
+        <item name="android:colorControlHighlight">#ff0f67b0</item>
+    </style>
+
+    <style name="ActionBarBOB" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#ff0f67b0</item>
+        <item name="android:titleTextStyle">@style/ActionBarBOB.Text</item>
+    </style>
+
+    <style name="ActionBarBOB.Text" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#fffecc00</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+
+
+    <style name="FloatingActionButton" parent="android:Widget.Material.Button">
+        <item name="android:background">@drawable/fab_background</item>
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
+    </style>
+
+</resources>
