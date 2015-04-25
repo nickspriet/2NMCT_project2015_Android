@@ -5,24 +5,26 @@
              tools:context="be.howest.nmct.bob.MenuFragment">
 
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/menu_header"
-        android:id="@+id/imgMenuHeader"
-        android:layout_gravity="top|left"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:scaleType="fitEnd"
-        android:background="#ffffdd17"/>
-
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@android:id/list"
-        android:layout_below="@+id/imgMenuHeader"
-        android:layout_alignEnd="@+id/imgMenuHeader"
+        android:background="#ffffffff"
+        android:layout_above="@+id/imgMenuHeader"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/menu_header"
+        android:id="@+id/imgMenuHeader"
+        android:layout_gravity="top|left"
+        android:scaleType="fitEnd"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
         android:background="#ffffffff"/>
 
 </RelativeLayout>

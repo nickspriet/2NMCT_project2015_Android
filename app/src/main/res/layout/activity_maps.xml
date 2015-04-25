@@ -9,35 +9,74 @@
 
     <RelativeLayout
         android:id="@+id/container"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--Google Maps-->
-        <!--<fragment-->
+        <FrameLayout
+            android:id="@+id/mapcontainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+            <!--Google Maps-->
+            <!--<fragment-->
             <!--android:id="@+id/map"-->
             <!--android:name="com.google.android.gms.maps.MapFragment"-->
             <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"/>-->
 
-        <ImageButton
+            <!--<ImageButton-->
+            <!--android:id="@+id/btnAddParty"-->
+            <!--style="@style/FloatingActionButton"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:layout_marginBottom="64dp"-->
+            <!--android:layout_marginRight="16dp"-->
+            <!--android:contentDescription="@null"-->
+            <!--android:src="@drawable/floating_action_button"/>-->
+
+        <com.melnykov.fab.FloatingActionButton
             android:id="@+id/btnAddParty"
-            style="@style/FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentStart="false"
             android:layout_marginBottom="64dp"
             android:layout_marginRight="16dp"
-            android:contentDescription="@null"
-            android:src="@drawable/floating_action_button"/>
+            android:src="@drawable/ic_add_white"
+            fab:fab_colorNormal="#ff0f67b0"
+            fab:fab_colorPressed="#303f9f"
+            fab:fab_colorRipple="#ffffdd17"
+            fab:fab_shadow="true"/>
+
+        <TextView
+            android:id="@+id/tvLatitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:gravity="top"
+            android:text="Latitude: "/>
+
+        <TextView
+            android:id="@+id/tvLongitude"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvLatitude"
+            android:layout_alignParentStart="true"
+            android:text="Longitude: "
+            android:layout_gravity="left|top"/>
 
     </RelativeLayout>
-
 
     <!--Drawerlayout-->
     <fragment
         android:id="@+id/diplomagraad_fragment"
         android:name="be.howest.nmct.bob.MenuFragment"
-        android:layout_width="360dp"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:dividerHeight="0dp"

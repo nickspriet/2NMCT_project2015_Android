@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="be.howest.nmct.bob.AddNewPartyFragment"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    tools:context="be.howest.nmct.bob.AddNewPartyFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -53,8 +53,8 @@
             android:layout_marginTop="32dp"
             android:text="Address"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignEnd="@+id/etDescription"
+            android:layout_alignStart="@+id/etDescription"/>
 
         <EditText
             android:id="@+id/etStreet"
@@ -64,9 +64,7 @@
             android:layout_alignStart="@+id/tvAddress"
             android:layout_below="@+id/tvAddress"
             android:layout_marginTop="8dp"
-            android:hint="Examplestreet 123"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"/>
+            android:hint="Examplestreet 123"/>
 
         <EditText
             android:id="@+id/etZipcode"
@@ -98,8 +96,8 @@
             android:layout_marginTop="32dp"
             android:text="When"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignEnd="@+id/etCity"
+            android:layout_alignStart="@+id/etZipcode"/>
 
         <TextView
             android:id="@+id/tvFrom"
@@ -109,8 +107,7 @@
             android:layout_below="@+id/tvWhen"
             android:layout_marginTop="8dp"
             android:text="From: "
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_marginLeft="16dp"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <TextView
             android:id="@+id/tvUntil"
@@ -132,16 +129,16 @@
             android:layout_marginTop="32dp"
             android:text="DJ&apos;s"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_alignParentStart="true"/>
+            android:layout_alignStart="@+id/tvUntil"/>
 
         <ImageView
             android:id="@+id/imgLogoDJ"
+            android:src="@drawable/ic_diskjockey"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_alignStart="@+id/tvDJs"
             android:layout_below="@+id/tvDJs"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="16dp"/>
+            android:layout_marginTop="8dp"/>
 
         <EditText
             android:id="@+id/etDiskJockey"
@@ -151,8 +148,7 @@
             android:layout_alignTop="@+id/imgLogoDJ"
             android:layout_marginLeft="16dp"
             android:layout_toEndOf="@+id/imgLogoDJ"
-            android:hint="Disk Jockey 1"
-            android:layout_marginRight="16dp"/>
+            android:hint="Disk Jockey 1"/>
 
     </RelativeLayout>
 

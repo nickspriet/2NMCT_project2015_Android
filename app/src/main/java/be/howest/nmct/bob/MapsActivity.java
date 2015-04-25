@@ -4,6 +4,7 @@ package be.howest.nmct.bob;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,28 +14,34 @@ import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.*;
+import com.google.android.gms.maps.model.*;
+import com.melnykov.fab.FloatingActionButton;
 
 
 public class MapsActivity extends FragmentActivity
-    implements OnMapReadyCallback
+        implements OnMapReadyCallback,
+        GoogleMap.OnMarkerDragListener
 {
     private DrawerLayout _drawerLayout;
-    private ImageButton btnAddParty;
-    private MapFragment _mapFragment;
+    private FloatingActionButton btnAddParty;
+    private TextView tvLatitude;
+    private TextView tvLongitude;
 
+    private MapFragment _mapFragment;
     private LocationManager _locationManager;
     private LocationListener _locationListener;
     private Location _lastKnownLocation;
     private String _bestProvider;
+    private Marker _myLocationMarker;
 
 
     @Override
@@ -43,8 +50,10 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        tvLatitude = (TextView) findViewById(R.id.tvLatitude);
+        tvLongitude = (TextView) findViewById(R.id.tvLongitude);
         _drawerLayout = (DrawerLayout) findViewById(R.id.drawer_menu);
-        btnAddParty = (ImageButton) findViewById(R.id.btnAddParty);
+        btnAddParty = (FloatingActionButton) findViewById(R.id.btnAddParty);
         btnAddParty.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -53,7 +62,7 @@ public class MapsActivity extends FragmentActivity
                 showAddNewPartyFragment(v);
 
                 //hide button
-                btnAddParty.setVisibility(v.INVISIBLE);
+                //btnAddParty.setVisibility(v.INVISIBLE);
             }
         });
 
@@ -61,30 +70,35 @@ public class MapsActivity extends FragmentActivity
         //Add MapFragment (in code)
         if (savedInstanceState == null)
         {
+            //nieuwe MapFragment aanmaken en toevoegen aan backstack
             _mapFragment = MapFragment.newInstance();
-            getFragmentManager().beginTransaction().add(R.id.container, _mapFragment, "mapfrag").commit();
+            getFragmentManager().beginTransaction().add(R.id.mapcontainer, _mapFragment, "mapfrag").commit();
         }
-
-
-        //fragment ophalen
-        //_mapFragment = (MapFragment) getFragmentManager().findFragmentByTag("mapfrag");
 
         //set the callback on the fragment
         _mapFragment.getMapAsync(this);
+
+        //change color of statusbar
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(new ColorDrawable(this.getResources().getColor(R.color.bgStatusBar)).getColor());
     }
 
 
     private void showAddNewPartyFragment(View v)
     {
         //fragment ophalen
-        AddNewPartyFragment anpFragment =  AddNewPartyFragment.newInstance(_lastKnownLocation);
+        AddNewPartyFragment anpFragment = AddNewPartyFragment.newInstance(_lastKnownLocation);
 
-        getFragmentManager().popBackStack();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.container, anpFragment)
                 .addToBackStack("ShowAddNewPartyFragment")
                 .commit();
+
+        //verwijder alle fragments van de backstack
+        getFragmentManager().popBackStack();
 
         setTitle("Add new party");
     }
@@ -96,22 +110,59 @@ public class MapsActivity extends FragmentActivity
         // Acquire a reference to the system Location Manager
         _locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        boolean isProviderEnabled = _locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!isProviderEnabled)
+        //setup the Location Listener
+        initLocationListener(googleMap);
+
+        //beste provider ophalen
+        _bestProvider = _locationManager.getBestProvider(new Criteria(), false);
+        if (_bestProvider != null)
         {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
+            Log.d("BEST PROVIDER", _bestProvider);
+            _locationManager.requestLocationUpdates(_bestProvider, 0, 0, _locationListener);
+
+            getLocationAndAddMarker(googleMap);
+
+        }
+        else
+        {
+            //Melding aan gebruiker geven dat locatie niet kan opgehaald worden
+            Toast.makeText(this, "Go to settings to enable location service", Toast.LENGTH_SHORT).show();
+            //Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            //startActivity(intent);
         }
 
-        Criteria criteria = new Criteria();
-        _bestProvider = _locationManager.getBestProvider(criteria, false);
 
+        // Register the listener with the Location Manager to receive location updates
+        //_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, _locationListener);
+        //_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, _locationListener);
+    }
+
+    private void initLocationListener(final GoogleMap googleMap)
+    {
         _locationListener = new LocationListener()
         {
             @Override
             public void onLocationChanged(Location location)
             {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
 
+                tvLatitude.setText("Latitude: " + latitude);
+                tvLongitude.setText("Longitude: " + longitude);
+
+                getLocationAndAddMarker(googleMap);
+
+                //marker updaten (= verwijderen en opnieuw toevoegen)
+                if (_myLocationMarker != null) _myLocationMarker.remove();
+
+                MarkerOptions options = new MarkerOptions()
+                        .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
+                        .title("You are here")
+                        .draggable(true);
+
+                Log.d("NEW MARKER", options.getTitle());
+
+                _myLocationMarker = googleMap.addMarker(options);
             }
 
             @Override
@@ -123,30 +174,36 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onProviderEnabled(String provider)
             {
-                Toast.makeText((Context) _locationListener, "Enabled new provider " + _bestProvider, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Enabled new provider " + provider, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onProviderDisabled(String provider)
             {
-                Toast.makeText((Context) _locationListener, "Disabled provider " + _bestProvider, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Disabled provider " + provider, Toast.LENGTH_SHORT).show();
             }
         };
+    }
 
-
-        // Register the listener with the Location Manager to receive location updates
-        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
+    private void getLocationAndAddMarker(final GoogleMap googleMap)
+    {
+        //locatie ophalen
         _lastKnownLocation = _locationManager.getLastKnownLocation(_bestProvider);
         if (_lastKnownLocation != null)
         {
-            MarkerOptions options = new MarkerOptions().position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude())).title("You are here");
-            googleMap.addMarker(options);
+            //marker updaten (= verwijderen en opnieuw toevoegen)
+            if (_myLocationMarker != null) _myLocationMarker.remove();
+
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
+                    .title("You are here")
+                    .draggable(true);
+
+            Log.d("NEW MARKER", options.getTitle());
+
+            _myLocationMarker = googleMap.addMarker(options);
         }
     }
-
-
 
     @Override
     protected void onResume()
@@ -159,6 +216,25 @@ public class MapsActivity extends FragmentActivity
     protected void onPause()
     {
         super.onPause();
-        _locationManager.removeUpdates(_locationListener);
+        if (_locationManager != null) _locationManager.removeUpdates(_locationListener);
+    }
+
+
+    @Override
+    public void onMarkerDragStart(Marker marker)
+    {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker)
+    {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker)
+    {
+
     }
 }

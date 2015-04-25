@@ -11,7 +11,7 @@
     </style>
 
     <style name="ActionBarBOB" parent="@android:style/Widget.Holo.Light.ActionBar">
-        <item name="android:background">#ff0f67b0</item>
+        <item name="android:background">#1565c0</item>
         <item name="android:titleTextStyle">@style/ActionBarBOB.Text</item>
     </style>
 
