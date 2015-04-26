@@ -16,7 +16,36 @@
         <FrameLayout
             android:id="@+id/mapcontainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="false">
+
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/btnAddParty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="false"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="false"
+                android:layout_marginBottom="64dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_add_white"
+                fab:fab_colorNormal="#ff0f67b0"
+                fab:fab_colorPressed="#303f9f"
+                fab:fab_colorRipple="#ffffdd17"
+                fab:fab_shadow="true"
+                android:layout_gravity="bottom|right"/>
+        </FrameLayout>
+
+      <!--  <SearchView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/svLocation"
+            android:clickable="false"
+            android:layout_alignParentEnd="false"
+            android:layout_alignParentRight="false"
+            android:layout_margin="16dp"
+            android:background="#ffffffff"/>-->
 
             <!--Google Maps-->
             <!--<fragment-->
@@ -36,22 +65,6 @@
             <!--android:contentDescription="@null"-->
             <!--android:src="@drawable/floating_action_button"/>-->
 
-        <com.melnykov.fab.FloatingActionButton
-            android:id="@+id/btnAddParty"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="false"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="false"
-            android:layout_marginBottom="64dp"
-            android:layout_marginRight="16dp"
-            android:src="@drawable/ic_add_white"
-            fab:fab_colorNormal="#ff0f67b0"
-            fab:fab_colorPressed="#303f9f"
-            fab:fab_colorRipple="#ffffdd17"
-            fab:fab_shadow="true"/>
-
         <TextView
             android:id="@+id/tvLatitude"
             android:layout_width="wrap_content"
@@ -59,7 +72,8 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:gravity="top"
-            android:text="Latitude: "/>
+            android:text="Latitude: "
+            android:layout_marginTop="60dp"/>
 
         <TextView
             android:id="@+id/tvLongitude"
@@ -69,6 +83,8 @@
             android:layout_alignParentStart="true"
             android:text="Longitude: "
             android:layout_gravity="left|top"/>
+
+
 
     </RelativeLayout>
 

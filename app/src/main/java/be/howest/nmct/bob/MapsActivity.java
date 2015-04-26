@@ -28,8 +28,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback,
-        GoogleMap.OnMarkerDragListener
+        implements OnMapReadyCallback
 {
     private DrawerLayout _drawerLayout;
     private FloatingActionButton btnAddParty;
@@ -37,6 +36,7 @@ public class MapsActivity extends FragmentActivity
     private TextView tvLongitude;
 
     private MapFragment _mapFragment;
+    private GoogleMap _map;
     private LocationManager _locationManager;
     private LocationListener _locationListener;
     private Location _lastKnownLocation;
@@ -62,7 +62,7 @@ public class MapsActivity extends FragmentActivity
                 showAddNewPartyFragment(v);
 
                 //hide button
-                //btnAddParty.setVisibility(v.INVISIBLE);
+                btnAddParty.setVisibility(v.INVISIBLE);
             }
         });
 
@@ -78,6 +78,8 @@ public class MapsActivity extends FragmentActivity
         //set the callback on the fragment
         _mapFragment.getMapAsync(this);
 
+
+
         //change color of statusbar
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -85,20 +87,26 @@ public class MapsActivity extends FragmentActivity
         window.setStatusBarColor(new ColorDrawable(this.getResources().getColor(R.color.bgStatusBar)).getColor());
     }
 
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        _map = _mapFragment.getMap();
+        initOnMarkerDragListener();
+    }
 
     private void showAddNewPartyFragment(View v)
     {
         //fragment ophalen
-        AddNewPartyFragment anpFragment = AddNewPartyFragment.newInstance(_lastKnownLocation);
-
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.container, anpFragment)
-                .addToBackStack("ShowAddNewPartyFragment")
-                .commit();
+        AddNewPartyFragment anpFragment = new AddNewPartyFragment(_myLocationMarker);
 
         //verwijder alle fragments van de backstack
         getFragmentManager().popBackStack();
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.mapcontainer, anpFragment)
+                .addToBackStack("ShowAddNewPartyFragment")
+                .commit();
 
         setTitle("Add new party");
     }
@@ -121,7 +129,6 @@ public class MapsActivity extends FragmentActivity
             _locationManager.requestLocationUpdates(_bestProvider, 0, 0, _locationListener);
 
             getLocationAndAddMarker(googleMap);
-
         }
         else
         {
@@ -144,25 +151,25 @@ public class MapsActivity extends FragmentActivity
             @Override
             public void onLocationChanged(Location location)
             {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
+                tvLatitude.setText("Latitude: " + location.getLatitude());
+                tvLongitude.setText("Longitude: " + location.getLongitude());
 
-                tvLatitude.setText("Latitude: " + latitude);
-                tvLongitude.setText("Longitude: " + longitude);
+                //if (_lastKnownLocation != location)
+                //{
+                    //marker updaten (= verwijderen en opnieuw toevoegen)
+                    if (_myLocationMarker != null) _myLocationMarker.remove();
 
-                getLocationAndAddMarker(googleMap);
+                    MarkerOptions options = new MarkerOptions()
+                            .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
+                            .title("You are here")
+                            .draggable(true);
 
-                //marker updaten (= verwijderen en opnieuw toevoegen)
-                if (_myLocationMarker != null) _myLocationMarker.remove();
+                    Log.d("NEW MARKER", options.getTitle());
 
-                MarkerOptions options = new MarkerOptions()
-                        .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
-                        .title("You are here")
-                        .draggable(true);
+                    _myLocationMarker = googleMap.addMarker(options);
 
-                Log.d("NEW MARKER", options.getTitle());
-
-                _myLocationMarker = googleMap.addMarker(options);
+                    _lastKnownLocation = location;
+               //}
             }
 
             @Override
@@ -220,21 +227,33 @@ public class MapsActivity extends FragmentActivity
     }
 
 
-    @Override
-    public void onMarkerDragStart(Marker marker)
+    private void initOnMarkerDragListener()
     {
+        _map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener()
+        {
 
-    }
+            @Override
+            public void onMarkerDragStart(Marker marker)
+            {
+                //stop de LocationListener met de locatie op te halen
+                if (_locationManager != null) _locationManager.removeUpdates(_locationListener);
+            }
 
-    @Override
-    public void onMarkerDrag(Marker marker)
-    {
+            @Override
+            public void onMarkerDrag(Marker marker)
+            {
+                _lastKnownLocation.setLatitude(marker.getPosition().latitude);
+                _lastKnownLocation.setLongitude(marker.getPosition().longitude);
 
-    }
+                tvLatitude.setText("Latitude: " + _lastKnownLocation.getLatitude());
+                tvLongitude.setText("Longitude: " + _lastKnownLocation.getLongitude());
+            }
 
-    @Override
-    public void onMarkerDragEnd(Marker marker)
-    {
-
+            @Override
+            public void onMarkerDragEnd(Marker marker)
+            {
+                Log.d("end drag", "DRAGGED");
+            }
+        });
     }
 }
