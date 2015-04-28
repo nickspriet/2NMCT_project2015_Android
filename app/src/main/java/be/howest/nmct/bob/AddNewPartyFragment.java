@@ -105,7 +105,10 @@ public class AddNewPartyFragment extends Fragment
                 _picture = data.getData();
 
                 //crop image
-                CropImage();
+                //CropImage();
+
+                imgPartyPicture.setImageBitmap((Bitmap) data.getExtras().get("data"));
+
             }
             else if (requestCode == REQUEST_IMAGE_CROP)
             {

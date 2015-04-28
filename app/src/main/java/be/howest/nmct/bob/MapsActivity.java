@@ -42,6 +42,7 @@ public class MapsActivity extends FragmentActivity
     private Location _lastKnownLocation;
     private String _bestProvider;
     private Marker _myLocationMarker;
+    private int _zoomLevel = 10;
 
 
     @Override
@@ -77,7 +78,6 @@ public class MapsActivity extends FragmentActivity
 
         //set the callback on the fragment
         _mapFragment.getMapAsync(this);
-
 
 
         //change color of statusbar
@@ -156,20 +156,22 @@ public class MapsActivity extends FragmentActivity
 
                 //if (_lastKnownLocation != location)
                 //{
-                    //marker updaten (= verwijderen en opnieuw toevoegen)
-                    if (_myLocationMarker != null) _myLocationMarker.remove();
+                //marker updaten (= verwijderen en opnieuw toevoegen)
+                if (_myLocationMarker != null) _myLocationMarker.remove();
 
-                    MarkerOptions options = new MarkerOptions()
-                            .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
-                            .title("You are here")
-                            .draggable(true);
+                MarkerOptions options = new MarkerOptions()
+                        .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                        .title("You are here")
+                        .draggable(true);
 
-                    Log.d("NEW MARKER", options.getTitle());
+                Log.d("NEW MARKER", options.getTitle());
 
-                    _myLocationMarker = googleMap.addMarker(options);
+                _myLocationMarker = googleMap.addMarker(options);
 
-                    _lastKnownLocation = location;
-               //}
+                _lastKnownLocation = location;
+
+
+                //}
             }
 
             @Override
@@ -198,18 +200,20 @@ public class MapsActivity extends FragmentActivity
         _lastKnownLocation = _locationManager.getLastKnownLocation(_bestProvider);
         if (_lastKnownLocation != null)
         {
-            //marker updaten (= verwijderen en opnieuw toevoegen)
-            if (_myLocationMarker != null) _myLocationMarker.remove();
+        //marker updaten (= verwijderen en opnieuw toevoegen)
+        if (_myLocationMarker != null) _myLocationMarker.remove();
 
-            MarkerOptions options = new MarkerOptions()
-                    .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
-                    .title("You are here")
-                    .draggable(true);
+        MarkerOptions options = new MarkerOptions()
+                .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
+                .title("You are here")
+                .draggable(true);
 
-            Log.d("NEW MARKER", options.getTitle());
+        Log.d("NEW MARKER", options.getTitle());
 
-            _myLocationMarker = googleMap.addMarker(options);
-        }
+        _myLocationMarker = googleMap.addMarker(options);
+
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()), _zoomLevel));
+    }
     }
 
     @Override
