@@ -1,6 +1,7 @@
 package be.howest.nmct.bob;
 
 
+import android.app.Activity;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -8,11 +9,15 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,22 +25,23 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
-import be.howest.nmct.bob.be.howest.nmct.bob.loader.Contract;
-import be.howest.nmct.bob.be.howest.nmct.bob.loader.PartyLoader;
+import be.howest.nmct.bob.helper.CircularImageHelper;
+import be.howest.nmct.bob.loader.Contract;
+import be.howest.nmct.bob.loader.PartyLoader;
 
 
 public class PartiesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     private PartyAdapter _pAdapter;
 
+
     //constructor
     public PartiesFragment()
     {
-        // Required empty public constructor
+
     }
 
 
@@ -87,32 +93,35 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
                 view.setTag(holder);
             }
 
-
-            TextView tvName = (TextView) holder.tvName;
-            int columnnumber1 = cursor.getColumnIndex(Contract.PartyColumns.COLOMN_PARTY_NAME);
+            TextView tvName = holder.tvName;
+            int columnnumber1 = cursor.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_NAME);
             tvName.setText(cursor.getString(columnnumber1));
 
-            ImageView imgPicture = (ImageView) holder.imgPicture;
-            int columnnumber2 = cursor.getColumnIndex(Contract.PartyColumns.COLOMN_PARTY_PICTURE);
+            ImageView imgPicture = holder.imgPicture;
+            int columnnumber4 = cursor.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_PICTURE);
+            byte[] blob = cursor.getBlob(columnnumber4);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+            imgPicture.setImageBitmap(CircularImageHelper.getCroppedBitmap(bitmap, 200));
 
-
-            byte[] blob = cursor.getBlob(cursor.getColumnIndex(Contract.PartyColumns.COLOMN_PARTY_PICTURE));
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(blob);
-            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            imgPicture.setImageBitmap(bitmap);
+            TextView tvAddressZipcodeCity = holder.tvZipcodeCity;
+            int columnnumber6 = cursor.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_ZIPCODE);
+            int columnnumber7 = cursor.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_CITY);
+            tvAddressZipcodeCity.setText(cursor.getString(columnnumber6) + " " + cursor.getString(columnnumber7));
         }
 
 
         class PartyViewHolder
         {
-            public TextView tvName = null;
             public ImageView imgPicture = null;
+            public TextView tvName = null;
+            public TextView tvZipcodeCity = null;
 
             //constructor
             PartyViewHolder(View rowParty)
             {
-                tvName = (TextView) rowParty.findViewById(R.id.tvName);
                 imgPicture = (ImageView) rowParty.findViewById(R.id.imgPicture);
+                tvName = (TextView) rowParty.findViewById(R.id.tvName);
+                tvZipcodeCity = (TextView) rowParty.findViewById(R.id.tvZipcodeCity);
             }
         }
     }
@@ -126,14 +135,15 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
 
         String[] columns = new String[]
                 {
-                        Contract.PartyColumns.COLOMN_PARTY_NAME,
-                        Contract.PartyColumns.COLOMN_PARTY_PICTURE
+                        Contract.PartyColumns.COLUMN_PARTY_ID,
+                        Contract.PartyColumns.COLUMN_PARTY_NAME,
+                        Contract.PartyColumns.COLUMN_PARTY_PICTURE
                 };
 
         int[] viewIds = new int[]
                 {
                         R.id.tvName,
-                        R.id.imgPicture
+                        //R.id.imgPicture
                 };
 
         //initialisatie adapter
@@ -143,5 +153,4 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
         //activeer de loader
         getLoaderManager().initLoader(0, null, this);
     }
-
 }

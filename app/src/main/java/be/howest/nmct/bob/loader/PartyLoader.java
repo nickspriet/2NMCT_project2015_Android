@@ -1,4 +1,4 @@
-package be.howest.nmct.bob.be.howest.nmct.bob.loader;
+package be.howest.nmct.bob.loader;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -7,16 +7,14 @@ import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.provider.BaseColumns;
-import android.util.Base64;
 import android.util.JsonReader;
 import android.util.JsonToken;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,7 +29,7 @@ import be.howest.nmct.bob.Party;
  */
 public class PartyLoader extends AsyncTaskLoader<Cursor>
 {
-    private static final String url = "http://student.howest.be/nick.spriet/BOB/parties3.php";
+    private static final String serverURL = "http://student.howest.be/nick.spriet/BOB/";
     private Cursor _cursor;
     private static Object lock = new Object();
     private List<Party> _lijstParties = null;
@@ -40,7 +38,22 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
     private final String[] _columnNames = new String[]
             {
                     BaseColumns._ID,
-                    Contract.PartyColumns.COLOMN_PARTY_NAME
+                    Contract.PartyColumns.COLUMN_PARTY_ID,
+                    Contract.PartyColumns.COLUMN_PARTY_NAME,
+                    Contract.PartyColumns.COLUMN_PARTY_DESCRIPTION,
+                    Contract.PartyColumns.COLUMN_PARTY_PICTURE,
+                    Contract.PartyColumns.COLUMN_PARTY_ADDRESS,
+                    Contract.PartyColumns.COLUMN_PARTY_ZIPCODE,
+                    Contract.PartyColumns.COLUMN_PARTY_CITY,
+                    Contract.PartyColumns.COLUMN_PARTY_FROMDATE,
+                    Contract.PartyColumns.COLUMN_PARTY_UNTILDATE,
+                    Contract.PartyColumns.COLUMN_PARTY_PRICEPRESALE,
+                    Contract.PartyColumns.COLUMN_PARTY_PRICEATTHEDOOR,
+                    Contract.PartyColumns.COLUMN_PARTY_DISKJOCKEY1,
+                    Contract.PartyColumns.COLUMN_PARTY_DISKJOCKEY2,
+                    Contract.PartyColumns.COLUMN_PARTY_DISKJOCKEY3,
+                    Contract.PartyColumns.COLUMN_PARTY_LATITUDE,
+                    Contract.PartyColumns.COLUMN_PARTY_LONGITUDE,
             };
 
 
@@ -71,8 +84,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
     }
 
 
-    private void loadCursor()
-    {
+    private void loadCursor(){
         synchronized (lock)
         {
             if (_cursor != null) return;
@@ -83,7 +95,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
 
             try
             {
-                input = new URL(url).openStream();
+                input = new URL(serverURL + "parties3.php").openStream();
                 reader = new JsonReader(new InputStreamReader(input, "UTF-8"));
 
                 _lijstParties = new ArrayList();
@@ -93,9 +105,10 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                 while (reader.hasNext())
                 {
                     reader.beginObject();
+                    int partyid = 0;
                     String name = "";
                     String description = "";
-                    Bitmap picture = null;
+                    byte[] picture = null;
                     String address = "";
                     String zipcode = "";
                     String city = "";
@@ -115,6 +128,13 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
 
                         switch (nextName)
                         {
+                            case "ID":
+                                partyid = reader.nextInt();
+
+                                //picture ophalen van de server adhv het id (bv. 0.png, 1.png, ...)
+                                picture = getPictureFromPartyID(partyid);
+                                break;
+
                             case "Name":
                                 name = reader.nextString();
                                 break;
@@ -165,23 +185,27 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                                 break;
 
                             case "PricePresale":
-                            pricepresale = Double.parseDouble(reader.nextString());
-                            break;
+                                if (reader.peek() == JsonToken.STRING) pricepresale = Double.parseDouble(reader.nextString());
+                                else  reader.skipValue();
+                                break;
 
                             case "PriceAtTheDoor":
                                 priceatthedoor = Double.parseDouble(reader.nextString());
                                 break;
 
                             case "DiskJockey1":
-                                diskjockey1 = reader.nextString();
+                                if (reader.peek() == JsonToken.STRING) diskjockey1 = reader.nextString();
+                                else  reader.skipValue();
                                 break;
 
                             case "DiskJockey2":
-                                diskjockey2 = reader.nextString();
+                                if (reader.peek() == JsonToken.STRING) diskjockey2 = reader.nextString();
+                                else  reader.skipValue();
                                 break;
 
                             case "DiskJockey3":
-                                diskjockey3 = reader.nextString();
+                                if (reader.peek() == JsonToken.STRING) diskjockey3 = reader.nextString();
+                                else  reader.skipValue();
                                 break;
 
                             case "Latitude":
@@ -196,15 +220,29 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                                 reader.skipValue();
                                 break;
                         }
-
-                        Party p = new Party(name, description, picture, address, zipcode, city, fromdate, untildate, pricepresale, priceatthedoor, diskjockey1, diskjockey2, diskjockey3, latitude, longitude);
-                        _lijstParties.add(p);
                     }
+                    Party p = new Party(partyid, name, description, picture, address, zipcode, city, fromdate, untildate, pricepresale, priceatthedoor, diskjockey1, diskjockey2, diskjockey3, latitude, longitude);
+                    _lijstParties.add(p);
 
                     int id = 1;
                     MatrixCursor.RowBuilder row = matrixCursor.newRow();
                     row.add(id);
+                    row.add(partyid);
                     row.add(name);
+                    row.add(description);
+                    row.add(picture);
+                    row.add(address);
+                    row.add(zipcode);
+                    row.add(city);
+                    row.add(fromdate);
+                    row.add(untildate);
+                    row.add(pricepresale);
+                    row.add(priceatthedoor);
+                    row.add(diskjockey1);
+                    row.add(diskjockey2);
+                    row.add(diskjockey3);
+                    row.add(latitude);
+                    row.add(longitude);
                     id++;
 
                     reader.endObject();
@@ -237,4 +275,12 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
             }
         }
     }
+
+    private byte[] getPictureFromPartyID(int partyid) throws IOException
+    {
+        URL imageURL = new URL(serverURL + "images/" + partyid + ".jpg");
+        Bitmap bmPicture = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();    }
 }

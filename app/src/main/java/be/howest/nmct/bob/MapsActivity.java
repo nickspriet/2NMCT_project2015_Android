@@ -1,16 +1,12 @@
 package be.howest.nmct.bob;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.opengl.Visibility;
-import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
@@ -18,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,7 +68,9 @@ public class MapsActivity extends FragmentActivity
         {
             //nieuwe MapFragment aanmaken en toevoegen aan backstack
             _mapFragment = MapFragment.newInstance();
-            getFragmentManager().beginTransaction().add(R.id.mapcontainer, _mapFragment, "mapfrag").commit();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.mapcontainer, _mapFragment, "mapfrag")
+                    .commit();
         }
 
         //set the callback on the fragment
@@ -116,7 +113,7 @@ public class MapsActivity extends FragmentActivity
         //getFragmentManager().popBackStack();
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.mapcontainer, anpFragment)
+                .replace(R.id.mapcontainer, new PartiesFragment())
                 .addToBackStack("ShowAddNewPartyFragment")
                 .commit();
 

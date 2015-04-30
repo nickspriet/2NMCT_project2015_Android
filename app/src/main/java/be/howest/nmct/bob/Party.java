@@ -10,9 +10,10 @@ import java.util.Date;
 public class Party
 {
     //properties
+    private int ID;
     private String Name;
     private String Description;
-    private Bitmap Picture;
+    private byte[] Picture;
     private String Address;
     private String Zipcode;
     private String City;
@@ -27,8 +28,9 @@ public class Party
     private Double Longitude;
 
     //constructor
-    public Party(String name, String description, Bitmap picture, String address, String zipcode, String city, Date fromDate, Date untilDate, Double pricePresale, Double priceAtTheDoor, String diskJockey1, String diskJockey2, String diskJockey3, Double latitude, Double longitude)
+    public Party(int id, String name, String description, byte[] picture, String address, String zipcode, String city, Date fromDate, Date untilDate, Double pricePresale, Double priceAtTheDoor, String diskJockey1, String diskJockey2, String diskJockey3, Double latitude, Double longitude)
     {
+        ID = id;
         Name = name;
         Description = description;
         Picture = picture;
@@ -48,6 +50,11 @@ public class Party
 
 
     //getters
+    public int getID()
+    {
+        return ID;
+    }
+
     public String getName()
     {
         return Name;
@@ -58,7 +65,7 @@ public class Party
         return Description;
     }
 
-    public Bitmap getPicture()
+    public byte[] getPicture()
     {
         return Picture;
     }
