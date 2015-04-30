@@ -88,6 +88,18 @@ public class MapsActivity extends FragmentActivity
     }
 
     @Override
+    public void onBackPressed()
+    {
+        //zet floating action button terug op visible
+        View v = findViewById(R.id.container);
+        if (v != null && btnAddParty.getVisibility() == View.INVISIBLE)btnAddParty.setVisibility(View.VISIBLE);
+
+        if (getFragmentManager().getBackStackEntryCount() != 0) getFragmentManager().popBackStack();
+        else super.onBackPressed();
+    }
+
+
+    @Override
     protected void onStart()
     {
         super.onStart();
@@ -101,7 +113,7 @@ public class MapsActivity extends FragmentActivity
         AddNewPartyFragment anpFragment = new AddNewPartyFragment(_myLocationMarker);
 
         //verwijder alle fragments van de backstack
-        getFragmentManager().popBackStack();
+        //getFragmentManager().popBackStack();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.mapcontainer, anpFragment)

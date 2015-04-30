@@ -53,6 +53,30 @@ public class MenuFragment extends ListFragment
 
         _miAdapter = new MenuItemsAdapter();
         setListAdapter(_miAdapter);
+
+        //markeerPositieInListview(0);
+    }
+
+    private void markeerPositieInListview(int pos)
+    {
+        //style terugzetten van alle items in list
+        for (int i = 0; i < getListView().getChildCount(); i++)
+        {
+            getListView().getChildAt(i).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.TRANSPARENT);
+            TextView tvMenuTitle = (TextView) getListView().getChildAt(i).findViewById(R.id.tvMenuTitle);
+            tvMenuTitle.setTextColor(Color.GRAY);
+        }
+
+        startRippleAnimation(getListView().getChildAt(pos));
+        getListView().getChildAt(pos).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.LTGRAY);
+        ((TextView) (getListView().getChildAt(pos).findViewById(R.id.tvMenuTitle))).setTextColor(Color.WHITE);
+    }
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        //markeerPositieInListview(0);
     }
 
     public enum MENUITEM
@@ -61,7 +85,7 @@ public class MenuFragment extends ListFragment
         PARTIES("Show parties");
 
         String title;
-        String imageName;
+        //String imageName;
 
         //constructor
         MENUITEM(String title)
@@ -75,6 +99,7 @@ public class MenuFragment extends ListFragment
             return title;
         }
     }
+
 
     public class MenuItemsAdapter extends ArrayAdapter<MENUITEM>
     {
@@ -96,7 +121,6 @@ public class MenuFragment extends ListFragment
 
             imgMenuIcon = (ImageView) rowMenuItem.findViewById(R.id.imgMenuIcon);
             imgMenuIcon.setImageResource(getResourceID(item));
-
 
             //pas kleur aan van
             if (position == 0)
@@ -126,32 +150,8 @@ public class MenuFragment extends ListFragment
     {
         super.onListItemClick(l, v, position, id);
 
-        //pas kleur aan van
-        if (position == 0)
-        {
-            v.findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.BLUE);
-            tvMenuTitle.setTextColor(Color.RED);
-        }
-
-        //reveal circular effect
-        startRippleAnimation(v);
-
-        if (_selectedMenuItem != null)
-        {
-            TextView vorig = (TextView) _selectedMenuItem.findViewById(R.id.tvMenuTitle);
-            vorig.setTextColor(Color.GRAY);
-
-            LinearLayout voriglayout = (LinearLayout) vorig.getParent();
-            voriglayout.setBackgroundColor(Color.TRANSPARENT);
-        }
-
-        TextView nieuw = (TextView) v.findViewById(R.id.tvMenuTitle);
-        nieuw.setTextColor(Color.WHITE);
-
-        LinearLayout nieuwlayout = (LinearLayout) nieuw.getParent();
-        nieuwlayout.setBackgroundColor(Color.LTGRAY);
-
-        _selectedMenuItem = v;
+        //highlight active ListViewItem
+        markeerPositieInListview(position);
     }
 
     private void startRippleAnimation(View v)

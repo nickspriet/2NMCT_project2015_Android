@@ -64,7 +64,7 @@ public class AddNewPartyFragment extends Fragment
         etStreet = (EditText) v.findViewById(R.id.etStreet);
         etStreet.setText(_addresses.get(0).getAddressLine(0));
 
-        etZipcode = (EditText) v.findViewById(R.id.etZipcode);
+        etZipcode    = (EditText) v.findViewById(R.id.etZipcode);
         etZipcode.setText(_addresses.get(0).getPostalCode());
 
         etCity = (EditText) v.findViewById(R.id.etCity);

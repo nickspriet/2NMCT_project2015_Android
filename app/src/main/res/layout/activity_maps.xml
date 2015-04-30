@@ -90,7 +90,7 @@
 
     <!--Drawerlayout-->
     <fragment
-        android:id="@+id/diplomagraad_fragment"
+        android:id="@+id/drawer_fragment"
         android:name="be.howest.nmct.bob.MenuFragment"
         android:layout_width="250dp"
         android:layout_height="match_parent"
