@@ -2,6 +2,7 @@ package be.howest.nmct.bob;
 
 
 import android.animation.Animator;
+import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.graphics.Color;
@@ -25,8 +26,7 @@ public class MenuFragment extends ListFragment
     private ImageView imgMenuIcon;
 
     private MenuItemsAdapter _miAdapter;
-    private View _selectedMenuItem;
-
+    private OnMenuItemSelectedListener _omisListener;
 
     //constructor
     public MenuFragment()
@@ -38,11 +38,7 @@ public class MenuFragment extends ListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_menu, container, false);
-
-        _selectedMenuItem = v.findViewById(R.id.layoutMenuItem);
-
-        return v;
+        return inflater.inflate(R.layout.fragment_menu, container, false);
     }
 
 
@@ -57,27 +53,6 @@ public class MenuFragment extends ListFragment
         //markeerPositieInListview(0);
     }
 
-    private void markeerPositieInListview(int pos)
-    {
-        //style terugzetten van alle items in list
-        for (int i = 0; i < getListView().getChildCount(); i++)
-        {
-            getListView().getChildAt(i).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.TRANSPARENT);
-            TextView tvMenuTitle = (TextView) getListView().getChildAt(i).findViewById(R.id.tvMenuTitle);
-            tvMenuTitle.setTextColor(Color.GRAY);
-        }
-
-        startRippleAnimation(getListView().getChildAt(pos));
-        getListView().getChildAt(pos).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.LTGRAY);
-        ((TextView) (getListView().getChildAt(pos).findViewById(R.id.tvMenuTitle))).setTextColor(Color.WHITE);
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        //markeerPositieInListview(0);
-    }
 
     public enum MENUITEM
     {
@@ -151,7 +126,27 @@ public class MenuFragment extends ListFragment
         super.onListItemClick(l, v, position, id);
 
         //highlight active ListViewItem
-        markeerPositieInListview(position);
+        highlightActiveMenuItem(position);
+
+        MENUITEM item = _miAdapter.getItem(position);
+        _omisListener.onMenuItemSelected(item);
+    }
+
+    private void highlightActiveMenuItem(int pos)
+    {
+        //style terugzetten van alle items in list
+        for (int i = 0; i < getListView().getChildCount(); i++)
+        {
+            getListView().getChildAt(i).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.TRANSPARENT);
+            TextView tvMenuTitle = (TextView) getListView().getChildAt(i).findViewById(R.id.tvMenuTitle);
+            tvMenuTitle.setTextColor(Color.GRAY);
+        }
+
+        startRippleAnimation(getListView().getChildAt(pos));
+
+        //highlight active menu-item
+        getListView().getChildAt(pos).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.LTGRAY);
+        ((TextView) (getListView().getChildAt(pos).findViewById(R.id.tvMenuTitle))).setTextColor(Color.WHITE);
     }
 
     private void startRippleAnimation(View v)
@@ -172,5 +167,24 @@ public class MenuFragment extends ListFragment
         // make the view visible and start the animation
         viewMenuItem.setVisibility(View.VISIBLE);
         anim.start();
+    }
+
+
+
+    public interface OnMenuItemSelectedListener
+    {
+        public void onMenuItemSelected(MENUITEM item);
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try { _omisListener = (OnMenuItemSelectedListener) activity; }
+        catch (ClassCastException ccEx) { throw new ClassCastException(activity.toString() + " must implement OnMenuItemSelectedListener"); }
+
     }
 }

@@ -22,12 +22,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
+import be.howest.nmct.bob.admin.Party;
 import be.howest.nmct.bob.helper.CircularImageHelper;
 import be.howest.nmct.bob.loader.Contract;
 import be.howest.nmct.bob.loader.PartyLoader;
@@ -36,7 +38,7 @@ import be.howest.nmct.bob.loader.PartyLoader;
 public class PartiesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
     private PartyAdapter _pAdapter;
-
+    private OnPartySelectedListener _opsListener;
 
     //constructor
     public PartiesFragment()
@@ -101,7 +103,7 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
             int columnnumber4 = cursor.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_PICTURE);
             byte[] blob = cursor.getBlob(columnnumber4);
             Bitmap bitmap = BitmapFactory.decodeByteArray(blob, 0, blob.length);
-            imgPicture.setImageBitmap(CircularImageHelper.getCroppedBitmap(bitmap, 200));
+            imgPicture.setImageBitmap(CircularImageHelper.getCroppedBitmap(bitmap, 100));
 
             TextView tvAddressZipcodeCity = holder.tvZipcodeCity;
             int columnnumber6 = cursor.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_ZIPCODE);
@@ -143,7 +145,7 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
         int[] viewIds = new int[]
                 {
                         R.id.tvName,
-                        //R.id.imgPicture
+                        R.id.imgPicture
                 };
 
         //initialisatie adapter
@@ -152,5 +154,32 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
 
         //activeer de loader
         getLoaderManager().initLoader(0, null, this);
+    }
+
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
+        super.onListItemClick(l, v, position, id);
+
+        Party party = (Party) _pAdapter.getItem(position);
+        _opsListener.onPartySelected(party);
+    }
+
+    public interface OnPartySelectedListener
+    {
+        public void onPartySelected(Party party);
+    }
+
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try { _opsListener = (OnPartySelectedListener) activity; }
+        catch(ClassCastException ccEx) { throw new ClassCastException(activity.toString() + " must implement OnPartySelectedListener"); }
     }
 }

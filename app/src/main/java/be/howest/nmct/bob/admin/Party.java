@@ -1,4 +1,4 @@
-package be.howest.nmct.bob;
+package be.howest.nmct.bob.admin;
 
 import android.graphics.Bitmap;
 

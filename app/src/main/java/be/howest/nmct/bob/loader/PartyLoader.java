@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import be.howest.nmct.bob.Party;
+import be.howest.nmct.bob.admin.Party;
 
 /**
  * Created by Nick on 28/04/2015.

@@ -21,9 +21,14 @@ import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.*;
 import com.melnykov.fab.FloatingActionButton;
 
+import be.howest.nmct.bob.admin.Party;
+
 
 public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback
+        implements
+        OnMapReadyCallback,
+        MenuFragment.OnMenuItemSelectedListener,
+        PartiesFragment.OnPartySelectedListener
 {
     private DrawerLayout _drawerLayout;
     private FloatingActionButton btnAddParty;
@@ -46,9 +51,10 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        _drawerLayout = (DrawerLayout) findViewById(R.id.drawer_menu);
+
         tvLatitude = (TextView) findViewById(R.id.tvLatitude);
         tvLongitude = (TextView) findViewById(R.id.tvLongitude);
-        _drawerLayout = (DrawerLayout) findViewById(R.id.drawer_menu);
         btnAddParty = (FloatingActionButton) findViewById(R.id.btnAddParty);
         btnAddParty.setOnClickListener(new View.OnClickListener()
         {
@@ -64,32 +70,41 @@ public class MapsActivity extends FragmentActivity
 
 
         //Add MapFragment (in code)
-        if (savedInstanceState == null)
-        {
-            //nieuwe MapFragment aanmaken en toevoegen aan backstack
-            _mapFragment = MapFragment.newInstance();
-            getFragmentManager().beginTransaction()
-                    .add(R.id.mapcontainer, _mapFragment, "mapfrag")
-                    .commit();
-        }
+        if (savedInstanceState == null) showMapFragment();
 
         //set the callback on the fragment
         _mapFragment.getMapAsync(this);
 
+        changeStatusBarColor();
+    }
 
+    private void changeStatusBarColor()
+    {
         //change color of statusbar
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(new ColorDrawable(this.getResources().getColor(R.color.bgStatusBar)).getColor());
+
     }
+
+    private void showMapFragment()
+    {
+        //nieuwe MapFragment aanmaken en toevoegen aan backstack
+        _mapFragment = MapFragment.newInstance();
+        getFragmentManager().beginTransaction()
+                .add(R.id.mapcontainer, _mapFragment, "mapfrag")
+                .commit();
+    }
+
 
     @Override
     public void onBackPressed()
     {
         //zet floating action button terug op visible
         View v = findViewById(R.id.container);
-        if (v != null && btnAddParty.getVisibility() == View.INVISIBLE)btnAddParty.setVisibility(View.VISIBLE);
+        if (v != null && btnAddParty.getVisibility() == View.INVISIBLE)
+            btnAddParty.setVisibility(View.VISIBLE);
 
         if (getFragmentManager().getBackStackEntryCount() != 0) getFragmentManager().popBackStack();
         else super.onBackPressed();
@@ -103,23 +118,6 @@ public class MapsActivity extends FragmentActivity
         _map = _mapFragment.getMap();
         initOnMarkerDragListener();
     }
-
-    private void showAddNewPartyFragment(View v)
-    {
-        //fragment ophalen
-        AddNewPartyFragment anpFragment = new AddNewPartyFragment(_myLocationMarker);
-
-        //verwijder alle fragments van de backstack
-        //getFragmentManager().popBackStack();
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.mapcontainer, new PartiesFragment())
-                .addToBackStack("ShowAddNewPartyFragment")
-                .commit();
-
-        setTitle("Add new party");
-    }
-
 
     @Override
     public void onMapReady(final GoogleMap googleMap)
@@ -176,10 +174,7 @@ public class MapsActivity extends FragmentActivity
                 Log.d("NEW MARKER", options.getTitle());
 
                 _myLocationMarker = googleMap.addMarker(options);
-
                 _lastKnownLocation = location;
-
-
                 //}
             }
 
@@ -209,20 +204,20 @@ public class MapsActivity extends FragmentActivity
         _lastKnownLocation = _locationManager.getLastKnownLocation(_bestProvider);
         if (_lastKnownLocation != null)
         {
-        //marker updaten (= verwijderen en opnieuw toevoegen)
-        if (_myLocationMarker != null) _myLocationMarker.remove();
+            //marker updaten (= verwijderen en opnieuw toevoegen)
+            if (_myLocationMarker != null) _myLocationMarker.remove();
 
-        MarkerOptions options = new MarkerOptions()
-                .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
-                .title("You are here")
-                .draggable(true);
+            MarkerOptions options = new MarkerOptions()
+                    .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
+                    .title("You are here")
+                    .draggable(true);
 
-        Log.d("NEW MARKER", options.getTitle());
+            Log.d("NEW MARKER", options.getTitle());
 
-        _myLocationMarker = googleMap.addMarker(options);
+            _myLocationMarker = googleMap.addMarker(options);
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()), _zoomLevel));
-    }
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()), _zoomLevel));
+        }
     }
 
     @Override
@@ -268,5 +263,33 @@ public class MapsActivity extends FragmentActivity
                 Log.d("end drag", "DRAGGED");
             }
         });
+    }
+
+    @Override
+    public void onMenuItemSelected(MenuFragment.MENUITEM item)
+    {
+
+    }
+
+    @Override
+    public void onPartySelected(Party party)
+    {
+
+    }
+
+    private void showAddNewPartyFragment(View v)
+    {
+        //fragment ophalen
+        AddNewPartyFragment anpFragment = new AddNewPartyFragment(_myLocationMarker);
+
+        //verwijder alle fragments van de backstack
+        //getFragmentManager().popBackStack();
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.mapcontainer, new PartiesFragment())
+                .addToBackStack("ShowAddNewPartyFragment")
+                .commit();
+
+        setTitle("Add new party");
     }
 }
