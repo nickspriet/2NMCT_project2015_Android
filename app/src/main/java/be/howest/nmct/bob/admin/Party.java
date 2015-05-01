@@ -3,6 +3,7 @@ package be.howest.nmct.bob.admin;
 import android.graphics.Bitmap;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Nick on 28/04/2015.
@@ -47,6 +48,7 @@ public class Party
         Latitude = latitude;
         Longitude = longitude;
     }
+
 
 
     //getters
@@ -128,12 +130,5 @@ public class Party
     public Double getLongitude()
     {
         return Longitude;
-    }
-
-
-
-    public static Party getPartyByID(int partyid)
-    {
-        return null;
     }
 }

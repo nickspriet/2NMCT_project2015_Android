@@ -273,7 +273,10 @@
             android:layout_alignStart="@+id/imgLogoDJ3"
             android:layout_below="@+id/imgLogoDJ3"
             android:layout_marginTop="32dp"
-            android:text="Save party"/>
+            android:text="Save party"
+            android:background="#ff0f67b0"
+            android:textColor="#ffffdd17"
+            android:layout_marginBottom="16dp"/>
 
         <EditText
             android:id="@+id/editText"

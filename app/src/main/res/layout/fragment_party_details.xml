@@ -1,0 +1,149 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="be.howest.nmct.bob.PartyDetailsFragment">
+
+    <ImageView
+        android:id="@+id/imgDetailPicture"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:layout_gravity="left|top"
+        android:background="#ffc7c7c7"
+        android:scaleType="centerCrop"
+        android:scaleX="-1"/>
+
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@+id/tvDescription"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff0f67b0"
+        android:layout_below="@+id/imgDetailPicture"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvDetailDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detail description..."
+        android:textStyle="italic"
+        android:layout_below="@+id/tvDescription"
+        android:layout_alignStart="@+id/tvDescription"
+        />
+
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@+id/tvWhere"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Where"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff0f67b0"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_below="@+id/tvDetailDescription"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/tvDetailAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Detail Address"
+        android:layout_below="@+id/tvWhere"
+        android:layout_alignStart="@+id/tvWhere"/>
+
+    <TextView
+        android:id="@+id/tvDetailZipcodeCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvDetailAddress"
+        android:layout_below="@+id/tvDetailAddress"
+        android:text="Detail Zipcode, City"/>
+
+    <TextView
+        android:id="@+id/tvDetailFromDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="86dp"
+        android:text="Detail FromDate"
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/tvDetailAddress"/>
+
+    <TextView
+        android:id="@+id/tvDetailUntilDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvDetailFromDate"
+        android:layout_marginLeft="16dp"
+        android:layout_toEndOf="@+id/tvDetailFromDate"
+        android:text="Detail UntilDate"/>
+
+    <TextView
+        android:id="@+id/tvDetailPricePresale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvDetailFromDate"
+        android:layout_below="@+id/tvDetailFromDate"
+        android:layout_marginBottom="16dp"
+        android:text="Detail PricePresale"/>
+
+    <TextView
+        android:id="@+id/tvDetailPriceAtTheDoor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tvDetailPricePresale"
+        android:layout_marginLeft="16dp"
+        android:layout_toEndOf="@+id/tvDetailPricePresale"
+        android:text="Detail PriceAtTheDoor"/>
+
+    <TextView
+        android:id="@+id/tvDetailDiskJockey1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvDetailPricePresale"
+        android:layout_below="@+id/tvDetailPricePresale"
+        android:text="Detail DiskJockey1"/>
+
+    <TextView
+        android:id="@+id/tvDetailDiskJockey2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvDetailDiskJockey1"
+        android:layout_below="@+id/tvDetailDiskJockey1"
+        android:text="Detail DiskJockey2"/>
+
+    <TextView
+        android:id="@+id/tvDetailDiskJockey3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tvDetailDiskJockey2"
+        android:layout_below="@+id/tvDetailDiskJockey2"
+        android:text="Detail DiskJockey3"
+        />
+
+    <TextView
+        style="?android:attr/listSeparatorTextViewStyle"
+        android:id="@+id/tvWhen"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="When"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff0f67b0"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_below="@+id/tvDetailZipcodeCity"
+        android:layout_marginTop="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="8dp"/>
+
+</RelativeLayout>

@@ -4,6 +4,7 @@ package be.howest.nmct.bob;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -27,6 +28,7 @@ import com.google.android.gms.maps.model.*;
 import com.melnykov.fab.FloatingActionButton;
 
 import be.howest.nmct.bob.admin.Party;
+import be.howest.nmct.bob.admin.PartyAdmin;
 import be.howest.nmct.bob.loader.Contract;
 import be.howest.nmct.bob.loader.PartyLoader;
 
@@ -53,6 +55,9 @@ public class MapsActivity extends FragmentActivity
     private Marker _myLocationMarker;
     private int _zoomLevel = 10;
     private MenuFragment.MENUITEM _selectedMenuItem;
+
+
+    public static final int REQUEST_DETAIL = 1;
 
 
     @Override
@@ -107,10 +112,11 @@ public class MapsActivity extends FragmentActivity
         Fragment mapfrag = getFragmentManager().findFragmentByTag("mapfrag");
         if (mapfrag == null || !mapfrag.isVisible())
         {
-            getFragmentManager().popBackStack();
+            //getFragmentManager().popBackStack();
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.mapcontainer, _mapFragment, "mapfrag")
+                    .addToBackStack("ShowMapFragment")
                     .commit();
 
             //set the callback on the fragment
@@ -326,7 +332,15 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onPartySelected(int partyid)
     {
-        Party party = Party.getPartyByID(partyid);
+        //get party by partyid
+        Party party = PartyAdmin.getPartyByID(partyid);
+
+        //go to PartyDetailsActivity
+        Intent intent = new Intent(this, PartyDetailsActivity.class);
+        intent.putExtra(PartyDetailsActivity.EXTRA_DETAIL_ID, party.getID());
+        intent.putExtra(PartyDetailsActivity.EXTRA_DETAIL_NAME, party.getName());
+
+        startActivityForResult(intent, REQUEST_DETAIL);
     }
 
     private void showAddNewPartyFragment(View v)

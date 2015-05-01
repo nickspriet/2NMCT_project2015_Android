@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import be.howest.nmct.bob.admin.Party;
+import be.howest.nmct.bob.admin.PartyAdmin;
 
 /**
  * Created by Nick on 28/04/2015.
@@ -84,7 +85,8 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
     }
 
 
-    private void loadCursor(){
+    private void loadCursor()
+    {
         synchronized (lock)
         {
             if (_cursor != null) return;
@@ -176,7 +178,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                                 SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 try
                                 {
-                                    fromdate = format2.parse(reader.nextString());
+                                    untildate = format2.parse(reader.nextString());
                                 }
                                 catch (ParseException ex)
                                 {
@@ -250,6 +252,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                 reader.endArray();
 
                 _cursor = matrixCursor;
+                PartyAdmin.setParties(_lijstParties);
             }
             catch (IOException ioEx)
             {
@@ -263,6 +266,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                 }
                 catch (IOException ioEx)
                 {
+                    ioEx.printStackTrace();
                 }
 
                 try
@@ -271,6 +275,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                 }
                 catch (IOException ioEx)
                 {
+                    ioEx.printStackTrace();
                 }
             }
         }
