@@ -14,7 +14,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Name party..."
         android:id="@+id/tvName"
         android:textColor="#ff0f67b0"
@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Zipcode City"
+        android:textColor="#ff000000"
         android:id="@+id/tvZipcodeCity"
         android:layout_alignBottom="@+id/imgPicture"
         android:layout_alignStart="@+id/tvName"/>

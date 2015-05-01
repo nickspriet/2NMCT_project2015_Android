@@ -24,6 +24,7 @@ public class MenuFragment extends ListFragment
 {
     private TextView tvMenuTitle;
     private ImageView imgMenuIcon;
+    private ListView lvMenuItems;
 
     private MenuItemsAdapter _miAdapter;
     private OnMenuItemSelectedListener _omisListener;
@@ -38,9 +39,10 @@ public class MenuFragment extends ListFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_menu, container, false);
-    }
+        View v = inflater.inflate(R.layout.fragment_menu, container, false);
 
+        return v;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState)
@@ -60,7 +62,6 @@ public class MenuFragment extends ListFragment
         PARTIES("Show parties");
 
         String title;
-        //String imageName;
 
         //constructor
         MENUITEM(String title)
@@ -97,7 +98,7 @@ public class MenuFragment extends ListFragment
             imgMenuIcon = (ImageView) rowMenuItem.findViewById(R.id.imgMenuIcon);
             imgMenuIcon.setImageResource(getResourceID(item));
 
-            //pas kleur aan van
+            //highlight first item in list
             if (position == 0)
             {
                 rowMenuItem.findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.LTGRAY);
@@ -132,7 +133,7 @@ public class MenuFragment extends ListFragment
         _omisListener.onMenuItemSelected(item);
     }
 
-    private void highlightActiveMenuItem(int pos)
+    public void highlightActiveMenuItem(int pos)
     {
         //style terugzetten van alle items in list
         for (int i = 0; i < getListView().getChildCount(); i++)
@@ -148,6 +149,7 @@ public class MenuFragment extends ListFragment
         getListView().getChildAt(pos).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.LTGRAY);
         ((TextView) (getListView().getChildAt(pos).findViewById(R.id.tvMenuTitle))).setTextColor(Color.WHITE);
     }
+
 
     private void startRippleAnimation(View v)
     {
@@ -168,7 +170,6 @@ public class MenuFragment extends ListFragment
         viewMenuItem.setVisibility(View.VISIBLE);
         anim.start();
     }
-
 
 
     public interface OnMenuItemSelectedListener

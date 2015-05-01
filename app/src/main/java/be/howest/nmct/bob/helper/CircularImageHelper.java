@@ -41,7 +41,7 @@ public class CircularImageHelper
 
 
 
-
+    //http://stackoverflow.com/questions/16208365/create-a-circular-image-view-in-android
     public static Bitmap getCroppedBitmap(Bitmap bmp, int radius) {
         Bitmap sbmp;
         if (bmp.getWidth() != radius || bmp.getHeight() != radius)
@@ -58,7 +58,6 @@ public class CircularImageHelper
         Bitmap output = Bitmap.createBitmap(radius, radius, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
-        final int color = 0xffa19774;
         final Paint paint = new Paint();
         final Paint stroke = new Paint();
 
@@ -74,7 +73,7 @@ public class CircularImageHelper
         stroke.setDither(true);
 
         canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(Color.parseColor("#BAB399"));
+        paint.setColor(Color.parseColor("#ff0f67b0"));
         stroke.setColor(Color.parseColor("#ff0f67b0"));
         stroke.setStyle(Paint.Style.STROKE);
         stroke.setStrokeWidth(4f);

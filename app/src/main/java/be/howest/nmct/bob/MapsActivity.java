@@ -1,7 +1,11 @@
 package be.howest.nmct.bob;
 
 
+import android.app.Fragment;
+import android.app.LoaderManager;
 import android.content.Context;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -11,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,10 +27,13 @@ import com.google.android.gms.maps.model.*;
 import com.melnykov.fab.FloatingActionButton;
 
 import be.howest.nmct.bob.admin.Party;
+import be.howest.nmct.bob.loader.Contract;
+import be.howest.nmct.bob.loader.PartyLoader;
 
 
 public class MapsActivity extends FragmentActivity
         implements
+        LoaderManager.LoaderCallbacks<Cursor>,
         OnMapReadyCallback,
         MenuFragment.OnMenuItemSelectedListener,
         PartiesFragment.OnPartySelectedListener
@@ -35,6 +43,7 @@ public class MapsActivity extends FragmentActivity
     private TextView tvLatitude;
     private TextView tvLongitude;
 
+    private PartiesFragment _partiesFragment;
     private MapFragment _mapFragment;
     private GoogleMap _map;
     private LocationManager _locationManager;
@@ -43,6 +52,7 @@ public class MapsActivity extends FragmentActivity
     private String _bestProvider;
     private Marker _myLocationMarker;
     private int _zoomLevel = 10;
+    private MenuFragment.MENUITEM _selectedMenuItem;
 
 
     @Override
@@ -70,10 +80,14 @@ public class MapsActivity extends FragmentActivity
 
 
         //Add MapFragment (in code)
-        if (savedInstanceState == null) showMapFragment();
+        if (savedInstanceState == null)
+        {
+            //init fragments
+            _mapFragment = MapFragment.newInstance();
+            _partiesFragment = new PartiesFragment();
 
-        //set the callback on the fragment
-        _mapFragment.getMapAsync(this);
+            showMapFragment();
+        }
 
         changeStatusBarColor();
     }
@@ -90,11 +104,22 @@ public class MapsActivity extends FragmentActivity
 
     private void showMapFragment()
     {
-        //nieuwe MapFragment aanmaken en toevoegen aan backstack
-        _mapFragment = MapFragment.newInstance();
-        getFragmentManager().beginTransaction()
-                .add(R.id.mapcontainer, _mapFragment, "mapfrag")
-                .commit();
+        Fragment mapfrag = getFragmentManager().findFragmentByTag("mapfrag");
+        if (mapfrag == null || !mapfrag.isVisible())
+        {
+            getFragmentManager().popBackStack();
+
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.mapcontainer, _mapFragment, "mapfrag")
+                    .commit();
+
+            //set the callback on the fragment
+            _mapFragment.getMapAsync(this);
+
+            setTitle("BOB");
+        }
+
+        _drawerLayout.closeDrawer(Gravity.LEFT);
     }
 
 
@@ -103,8 +128,7 @@ public class MapsActivity extends FragmentActivity
     {
         //zet floating action button terug op visible
         View v = findViewById(R.id.container);
-        if (v != null && btnAddParty.getVisibility() == View.INVISIBLE)
-            btnAddParty.setVisibility(View.VISIBLE);
+        if (v != null && btnAddParty.getVisibility() == View.INVISIBLE) btnAddParty.setVisibility(View.VISIBLE);
 
         if (getFragmentManager().getBackStackEntryCount() != 0) getFragmentManager().popBackStack();
         else super.onBackPressed();
@@ -115,8 +139,33 @@ public class MapsActivity extends FragmentActivity
     protected void onStart()
     {
         super.onStart();
+
+        fillAdapterWithPartyData();
         _map = _mapFragment.getMap();
         initOnMarkerDragListener();
+    }
+
+
+    private void fillAdapterWithPartyData()
+    {
+        String[] columns = new String[]
+                {
+                        Contract.PartyColumns.COLUMN_PARTY_ID,
+                        Contract.PartyColumns.COLUMN_PARTY_NAME,
+                        Contract.PartyColumns.COLUMN_PARTY_PICTURE
+                };
+
+        int[] viewIds = new int[]
+                {
+                        R.id.tvName,
+                        R.id.imgPicture
+                };
+
+        //initialisatie adapter
+        _partiesFragment._pAdapter = new PartiesFragment.PartyAdapter(MapsActivity.this.getApplicationContext(), R.layout.row_party, null, columns, viewIds, 0);
+
+        //activeer de loader
+        getLoaderManager().initLoader(0, null, MapsActivity.this);
     }
 
     @Override
@@ -268,13 +317,16 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onMenuItemSelected(MenuFragment.MENUITEM item)
     {
+        _selectedMenuItem = item;
 
+        if (_selectedMenuItem == MenuFragment.MENUITEM.PARTIES) showPartiesFragment();
+        else showMapFragment();
     }
 
     @Override
-    public void onPartySelected(Party party)
+    public void onPartySelected(int partyid)
     {
-
+        Party party = Party.getPartyByID(partyid);
     }
 
     private void showAddNewPartyFragment(View v)
@@ -286,10 +338,52 @@ public class MapsActivity extends FragmentActivity
         //getFragmentManager().popBackStack();
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.mapcontainer, new PartiesFragment())
+                .replace(R.id.mapcontainer, anpFragment)
                 .addToBackStack("ShowAddNewPartyFragment")
                 .commit();
 
         setTitle("Add new party");
     }
+
+    private void showPartiesFragment()
+    {
+        Fragment partiesfrag = getFragmentManager().findFragmentByTag("partiesfrag");
+
+        if (partiesfrag == null || !partiesfrag.isVisible())
+        {
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.mapcontainer, _partiesFragment, "partiesfrag")
+                    .addToBackStack("ShowPartiesFragment")
+                    .commit();
+
+            setTitle("Parties nearby");
+
+            btnAddParty.setVisibility(View.INVISIBLE);
+
+            if (_locationManager != null) _locationManager.removeUpdates(_locationListener);
+        }
+
+        _drawerLayout.closeDrawer(Gravity.LEFT);
+    }
+
+
+    //region **METHODS FOR LOADER**
+    public Loader<Cursor> onCreateLoader(int id, Bundle args)
+    {
+        return new PartyLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
+    {
+        _partiesFragment._pAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader)
+    {
+        _partiesFragment._pAdapter.swapCursor(null);
+    }
+    //endregion
+
 }

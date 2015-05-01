@@ -35,9 +35,9 @@ import be.howest.nmct.bob.loader.Contract;
 import be.howest.nmct.bob.loader.PartyLoader;
 
 
-public class PartiesFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
+public class PartiesFragment extends ListFragment
 {
-    private PartyAdapter _pAdapter;
+    public PartyAdapter _pAdapter;
     private OnPartySelectedListener _opsListener;
 
     //constructor
@@ -53,28 +53,28 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_parties, container, false);
     }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args)
-    {
-        return new PartyLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
-    {
-        _pAdapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader)
-    {
-        _pAdapter.swapCursor(null);
-    }
+//
+//    @Override
+//    public Loader<Cursor> onCreateLoader(int id, Bundle args)
+//    {
+//        return new PartyLoader(getActivity());
+//    }
+//
+//    @Override
+//    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
+//    {
+//        _pAdapter.swapCursor(cursor);
+//    }
+//
+//    @Override
+//    public void onLoaderReset(Loader<Cursor> loader)
+//    {
+//        _pAdapter.swapCursor(null);
+//    }
 
 
     //visualiseer de data afkomstig vn de cursor
-    class PartyAdapter extends SimpleCursorAdapter
+    public static class PartyAdapter extends SimpleCursorAdapter
     {
         //default constructor
         public PartyAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags)
@@ -135,25 +135,25 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
     {
         super.onActivityCreated(savedInstanceState);
 
-        String[] columns = new String[]
-                {
-                        Contract.PartyColumns.COLUMN_PARTY_ID,
-                        Contract.PartyColumns.COLUMN_PARTY_NAME,
-                        Contract.PartyColumns.COLUMN_PARTY_PICTURE
-                };
-
-        int[] viewIds = new int[]
-                {
-                        R.id.tvName,
-                        R.id.imgPicture
-                };
-
-        //initialisatie adapter
-        _pAdapter = new PartyAdapter(getActivity(), R.layout.row_party, null, columns, viewIds, 0);
+//        String[] columns = new String[]
+//                {
+//                        Contract.PartyColumns.COLUMN_PARTY_ID,
+//                        Contract.PartyColumns.COLUMN_PARTY_NAME,
+//                        Contract.PartyColumns.COLUMN_PARTY_PICTURE
+//                };
+//
+//        int[] viewIds = new int[]
+//                {
+//                        R.id.tvName,
+//                        R.id.imgPicture
+//                };
+//
+//        //initialisatie adapter
+//        _pAdapter = new PartyAdapter(getActivity(), R.layout.row_party, null, columns, viewIds, 0);
         setListAdapter(_pAdapter);
 
         //activeer de loader
-        getLoaderManager().initLoader(0, null, this);
+        //getLoaderManager().initLoader(0, null, getActivity());
     }
 
 
@@ -162,13 +162,15 @@ public class PartiesFragment extends ListFragment implements LoaderManager.Loade
     {
         super.onListItemClick(l, v, position, id);
 
-        Party party = (Party) _pAdapter.getItem(position);
-        _opsListener.onPartySelected(party);
+        //get the clicked listItem
+        Cursor c = (Cursor) _pAdapter.getItem(position);
+        int partyid = c.getInt(c.getColumnIndex(Contract.PartyColumns.COLUMN_PARTY_ID));
+        _opsListener.onPartySelected(partyid);
     }
 
     public interface OnPartySelectedListener
     {
-        public void onPartySelected(Party party);
+        public void onPartySelected(int partyid);
     }
 
 

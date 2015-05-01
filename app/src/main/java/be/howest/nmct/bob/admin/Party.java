@@ -129,4 +129,11 @@ public class Party
     {
         return Longitude;
     }
+
+
+
+    public static Party getPartyByID(int partyid)
+    {
+        return null;
+    }
 }

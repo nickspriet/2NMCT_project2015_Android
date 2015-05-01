@@ -51,7 +51,7 @@
             android:value="AIzaSyDCFbuyEZHlfmu2r_0cCNEtAorOXPlJK2I" />
 
         <activity
-            android:name=".PartyDetailActivity"
+            android:name=".PartyDetailsActivity"
             android:label="@string/title_activity_party_detail" >
         </activity>
     </application>

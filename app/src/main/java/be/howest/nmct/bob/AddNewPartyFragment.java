@@ -82,15 +82,24 @@ public class AddNewPartyFragment extends Fragment
             }
         });
 
-
         return v;
     }
 
     private void dispatchTakePictureIntent()
     {
         Intent takePicutreIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null)
-            startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
+        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null) startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
+
+        try { _addresses = geocoder.getFromLocation(_myMarker.getPosition().latitude, _myMarker.getPosition().longitude, 1); }
+        catch (IOException ioEx) { Log.d("ioex", ioEx.getMessage()); }
     }
 
 
@@ -121,24 +130,24 @@ public class AddNewPartyFragment extends Fragment
     }
 
 
-    private void CropImage()
-    {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(_picture, "image/*");
-        intent.putExtra("crop", true);
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", 415);
-        intent.putExtra("outputY", 200);
-        intent.putExtra("scale", true);
-        intent.putExtra("return-data", true);
-        startActivityForResult(intent, REQUEST_IMAGE_CROP);
-    }
+//    private void CropImage()
+//    {
+//        Intent intent = new Intent("com.android.camera.action.CROP");
+//        intent.setDataAndType(_picture, "image/*");
+//        intent.putExtra("crop", true);
+//        intent.putExtra("aspectX", 1);
+//        intent.putExtra("aspectY", 1);
+//        intent.putExtra("outputX", 415);
+//        intent.putExtra("outputY", 200);
+//        intent.putExtra("scale", true);
+//        intent.putExtra("return-data", true);
+//        startActivityForResult(intent, REQUEST_IMAGE_CROP);
+//    }
 
 
-    public AddNewPartyFragment newInstance(Marker myLocationMarker)
-    {
-        AddNewPartyFragment anpFragment = new AddNewPartyFragment();
+//    public AddNewPartyFragment newInstance(Marker myLocationMarker)
+//    {
+//        AddNewPartyFragment anpFragment = new AddNewPartyFragment();
 //
 //        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
 //
@@ -153,32 +162,14 @@ public class AddNewPartyFragment extends Fragment
 //        {
 //            Log.d("ioex", ioEx.getMessage());
 //        }
+//
+//        return anpFragment;
+//    }
 
-        return anpFragment;
-    }
 
     @Override
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-
-        Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
-
-        try
-        {
-
-            _addresses = geocoder.getFromLocation(_myMarker.getPosition().latitude, _myMarker.getPosition().longitude, 1);
-
-        }
-        catch (IOException ioEx)
-        {
-            Log.d("ioex", ioEx.getMessage());
-        }
     }
 }
