@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -33,11 +34,14 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.Marker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -50,14 +54,14 @@ import be.howest.nmct.bob.admin.PartyAdmin;
 import be.howest.nmct.bob.helper.NetworkUtils;
 
 public class AddNewPartyFragment extends Fragment
-    implements
+        implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener
 {
     private ImageView imgPartyPicture;
     private EditText etPartyName;
     private EditText etDescription;
-    private EditText etStreet;
+    private EditText etAddress;
     private EditText etZipcode;
     private EditText etCity;
     private EditText etFrom;
@@ -82,6 +86,8 @@ public class AddNewPartyFragment extends Fragment
     private DateFormat dateFormat;
     private SimpleDateFormat timeFormat;
 
+    private double _lat;
+    private double _long;
 
     //constructor
     public AddNewPartyFragment()
@@ -92,6 +98,8 @@ public class AddNewPartyFragment extends Fragment
     public AddNewPartyFragment(Marker myLocationMarker)
     {
         this._myMarker = myLocationMarker;
+        _lat = _myMarker.getPosition().latitude;
+        _long = _myMarker.getPosition().longitude;
     }
 
     @Override
@@ -157,6 +165,7 @@ public class AddNewPartyFragment extends Fragment
             public void onClick(View v)
             {
                 saveParty();
+
             }
         });
 
@@ -165,26 +174,52 @@ public class AddNewPartyFragment extends Fragment
 
     private void saveParty()
     {
-        Party newParty = new Party();
-        newParty.setID(PartyAdmin.getParties().size());
-        newParty.setName(etPartyName.getText().toString());
-        newParty.setDescription(etDescription.getText().toString());
-        //newParty.setPicture();
-        newParty.setAddress(etStreet.getText().toString());
-        newParty.setZipcode(etZipcode.getText().toString());
-        newParty.setCity(etCity.getText().toString());
-        //newParty.setFromDate(etFrom.getText().toString());
-        //newParty.setUntilDate(etUntil.getText().toString());
-        newParty.setPricePresale(Double.parseDouble(etPresale.getText().toString()));
-        newParty.setPriceAtTheDoor(Double.parseDouble(etAtTheDoor.getText().toString()));
-        newParty.setDiskJockey1(etDiskJockey1.getText().toString());
-        newParty.setDiskJockey2(etDiskJockey2.getText().toString());
-        newParty.setDiskJockey3(etDiskJockey3.getText().toString());
-        newParty.setLatitude(_myMarker.getPosition().latitude);
-        newParty.setLongitude(_myMarker.getPosition().longitude);
+        new Thread(new Runnable()
+        {
+            public void run()
+            {
+                Party newParty = new Party();
+                newParty.setID(PartyAdmin.getParties().size());
+                newParty.setName(etPartyName.getText().toString());
+                newParty.setDescription(etDescription.getText().toString());
+//
+//                Bitmap bmPicture = ((BitmapDrawable) imgPartyPicture.getDrawable()).getBitmap();
+//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+//                bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
+//                newParty.setPicture(stream.toByteArray());
 
-        //post party to server
-        new SubmitPartyTask().execute(newParty);
+
+                newParty.setAddress(etAddress.getText().toString());
+                newParty.setZipcode(etZipcode.getText().toString());
+                newParty.setCity(etCity.getText().toString());
+
+                try
+                {
+                    SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+
+                    newParty.setFromDate(dateformat.parse(etFrom.getText().toString()));
+                    newParty.setUntilDate(dateformat.parse(etUntil.getText().toString()));
+
+                }
+                catch (ParseException e)
+                {
+                    e.printStackTrace();
+                }
+
+
+                newParty.setPricePresale(Double.parseDouble(etPresale.getText().toString()));
+                newParty.setPriceAtTheDoor(Double.parseDouble(etAtTheDoor.getText().toString()));
+                newParty.setDiskJockey1(etDiskJockey1.getText().toString());
+                newParty.setDiskJockey2(etDiskJockey2.getText().toString());
+                newParty.setDiskJockey3(etDiskJockey3.getText().toString());
+                newParty.setLatitude(_lat);
+                newParty.setLongitude(_long);
+
+                //post party to server
+                new SubmitPartyTask().execute(newParty);
+
+            }
+        }).start();
     }
 
     private void fillAddressWithDataFromMarker(View v)
@@ -192,10 +227,10 @@ public class AddNewPartyFragment extends Fragment
         //fill in address with data from marker
         if (_addresses != null)
         {
-            etStreet = (EditText) v.findViewById(R.id.etStreet);
-            etStreet.setText(_addresses.get(0).getAddressLine(0));
+            etAddress = (EditText) v.findViewById(R.id.etAddress);
+            etAddress.setText(_addresses.get(0).getAddressLine(0));
 
-            etZipcode    = (EditText) v.findViewById(R.id.etZipcode);
+            etZipcode = (EditText) v.findViewById(R.id.etZipcode);
             etZipcode.setText(_addresses.get(0).getPostalCode());
 
             etCity = (EditText) v.findViewById(R.id.etCity);
@@ -207,7 +242,8 @@ public class AddNewPartyFragment extends Fragment
     private void dispatchTakePictureIntent()
     {
         Intent takePicutreIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null) startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
+        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null)
+            startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
@@ -360,10 +396,12 @@ public class AddNewPartyFragment extends Fragment
         if (calendarFrom != null)
         {
             calendarFrom.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            calendarFrom.set(Calendar.MINUTE, minute);
             updateFrom();
         }
         else if (calendarUntil != null)
         {
+            calendarUntil.set(Calendar.HOUR_OF_DAY, hourOfDay);
             calendarUntil.set(Calendar.MINUTE, minute);
             updateUntil();
         }
@@ -372,16 +410,33 @@ public class AddNewPartyFragment extends Fragment
 
     private void updateFrom()
     {
-        etFrom.setText(dateFormat.format(calendarFrom.getTime()) + " " + timeFormat.format(calendarFrom.getTime()));
+        int yearFrom = calendarFrom.get(Calendar.YEAR);
+        int monthFrom = calendarFrom.get(Calendar.MONTH);
+        int dayFrom = calendarFrom.get(Calendar.DAY_OF_MONTH);
+        int hourFrom = calendarFrom.get(Calendar.HOUR_OF_DAY);
+        int minuteFrom = calendarFrom.get(Calendar.MINUTE);
+        Date dateFrom = new Date(yearFrom, monthFrom, dayFrom, hourFrom, minuteFrom);
+
+        //etFrom.setText(dateFormat.format(calendarFrom.getTime()) + " " + timeFormat.format(calendarFrom.getTime()));
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+        etFrom.setText(dateformat.format(dateFrom));
         calendarFrom = null;
     }
 
     private void updateUntil()
     {
-        etUntil.setText(dateFormat.format(calendarUntil.getTime()) + " " + timeFormat.format(calendarUntil.getTime()));
+        int yearUntil = calendarUntil.get(Calendar.YEAR);
+        int monthUntil = calendarUntil.get(Calendar.MONTH);
+        int dayUntil = calendarUntil.get(Calendar.DAY_OF_MONTH);
+        int hourUntil = calendarUntil.get(Calendar.HOUR_OF_DAY);
+        int minuteUntil = calendarUntil.get(Calendar.MINUTE);
+        Date dateUntil = new Date(yearUntil, monthUntil, dayUntil, hourUntil, minuteUntil);
+
+        //etUntil.setText(dateFormat.format(calendarUntil.getTime()) + " " + timeFormat.format(calendarUntil.getTime()));
+        SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+        etUntil.setText(dateformat.format(dateUntil));
         calendarUntil = null;
     }
-
 
 
     public class SubmitPartyTask extends AsyncTask<Party, Void, Boolean>
@@ -390,14 +445,28 @@ public class AddNewPartyFragment extends Fragment
         @Override
         protected Boolean doInBackground(Party... params)
         {
-            if (writeParty(params[0]) != null) return true;
-            else return false;
+            writeParty(params[0]);
+            return true;
+//            if (writeParty(params[0]) != null) return true;
+//            else return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean)
+        {
+            Toast.makeText(getActivity().getApplicationContext(), "New party has been created", Toast.LENGTH_SHORT).show();
         }
     }
 
     private String writeParty(Party party)
     {
-        return null;
+        String result = NetworkUtils.post3("https://student.howest.be/nick.spriet/BOB/parties3.php", party);
+
+//        if (result != null)
+//            Toast.makeText(getActivity().getApplicationContext(), "New party: (" + party.getName() + ") has been created", Toast.LENGTH_SHORT).show();
+
+        return result;
+
     }
 }
 

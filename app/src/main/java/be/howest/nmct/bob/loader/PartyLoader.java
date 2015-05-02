@@ -80,7 +80,6 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
     public Cursor loadInBackground()
     {
         if (_cursor == null) loadCursor();
-
         return _cursor;
     }
 
@@ -287,5 +286,6 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
         Bitmap bmPicture = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();    }
+        return stream.toByteArray();
+    }
 }

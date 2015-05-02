@@ -83,7 +83,7 @@
             android:textColor="#ff0f67b0"/>
 
         <EditText
-            android:id="@+id/etStreet"
+            android:id="@+id/etAddress"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/tvWhere"
@@ -96,8 +96,8 @@
             android:id="@+id/etZipcode"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/etStreet"
-            android:layout_below="@+id/etStreet"
+            android:layout_alignStart="@+id/etAddress"
+            android:layout_below="@+id/etAddress"
             android:layout_marginTop="8dp"
             android:hint="Zipcode"
             android:inputType="textPostalAddress"/>
@@ -107,7 +107,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/etDescription"
-            android:layout_below="@+id/etStreet"
+            android:layout_below="@+id/etAddress"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/etZipcode"
@@ -263,7 +263,7 @@
             android:longClickable="false"/>
 
         <EditText
-            android:id="@+id/etDiskJockey"
+            android:id="@+id/etDiskJockey1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignEnd="@+id/tvWhen"
@@ -278,7 +278,7 @@
             android:layout_height="35dp"
             android:layout_alignEnd="@+id/imgLogoDJ"
             android:layout_alignStart="@+id/imgLogoDJ"
-            android:layout_below="@+id/etDiskJockey"
+            android:layout_below="@+id/etDiskJockey1"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_diskjockey"
             android:labelFor="@+id/etDiskJockey2"/>
@@ -287,8 +287,8 @@
             android:id="@+id/etDiskJockey2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etDiskJockey"
-            android:layout_alignStart="@+id/etDiskJockey"
+            android:layout_alignEnd="@+id/etDiskJockey1"
+            android:layout_alignStart="@+id/etDiskJockey1"
             android:layout_alignTop="@+id/imgLogoDJ2"
             android:layout_marginTop="0dp"
             android:hint="Disk Jockey 2"/>
