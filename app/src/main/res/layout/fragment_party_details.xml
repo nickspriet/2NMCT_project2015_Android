@@ -1,149 +1,262 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="be.howest.nmct.bob.PartyDetailsFragment">
+<ScrollView
+    android:id="@+id/add_new_party_fragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:paddingBottom="32dp"
+    tools:context="be.howest.nmct.bob.PartyDetailsFragment">
 
-    <ImageView
-        android:id="@+id/imgDetailPicture"
-        android:layout_width="fill_parent"
-        android:layout_height="200dp"
-        android:layout_gravity="left|top"
-        android:background="#ffc7c7c7"
-        android:scaleType="centerCrop"
-        android:scaleX="-1"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:id="@+id/tvDescription"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff0f67b0"
-        android:layout_below="@+id/imgDetailPicture"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="8dp"/>
+        <ImageView
+            android:id="@+id/imgDetailPicture"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="left|top"
+            android:background="#ffc7c7c7"
+            android:scaleType="centerCrop"
+            />
 
-    <TextView
-        android:id="@+id/tvDetailDescription"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detail description..."
-        android:textStyle="italic"
-        android:layout_below="@+id/tvDescription"
-        android:layout_alignStart="@+id/tvDescription"
-        />
+        <TextView
+            android:id="@+id/tvDescription"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imgDetailPicture"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:text="Description"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff0f67b0"/>
 
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:id="@+id/tvWhere"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Where"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff0f67b0"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_below="@+id/tvDetailDescription"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"/>
+        <TextView
+            android:id="@+id/tvDetailDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvDescription"
+            android:layout_alignStart="@+id/tvDescription"
+            android:layout_below="@+id/tvDescription"
+            android:text="Detail description..."
+            />
 
-    <TextView
-        android:id="@+id/tvDetailAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detail Address"
-        android:layout_below="@+id/tvWhere"
-        android:layout_alignStart="@+id/tvWhere"/>
+        <TextView
+            android:id="@+id/tvWhere"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvDetailDescription"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:text="Where"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff0f67b0"/>
 
-    <TextView
-        android:id="@+id/tvDetailZipcodeCity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvDetailAddress"
-        android:layout_below="@+id/tvDetailAddress"
-        android:text="Detail Zipcode, City"/>
+        <TextView
+            android:id="@+id/tvDetailAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvWhere"
+            android:layout_alignStart="@+id/tvWhere"
+            android:layout_below="@+id/tvWhere"
+            android:layout_marginBottom="4dp"
+            android:text="Detail Address"/>
 
-    <TextView
-        android:id="@+id/tvDetailFromDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="86dp"
-        android:text="Detail FromDate"
-        android:layout_alignParentBottom="true"
-        android:layout_toEndOf="@+id/tvDetailAddress"/>
+        <TextView
+            android:id="@+id/tvDetailZipcodeCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvDetailAddress"
+            android:layout_alignStart="@+id/tvDetailAddress"
+            android:layout_below="@+id/tvDetailAddress"
+            android:text="Detail Zipcode, City"/>
 
-    <TextView
-        android:id="@+id/tvDetailUntilDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tvDetailFromDate"
-        android:layout_marginLeft="16dp"
-        android:layout_toEndOf="@+id/tvDetailFromDate"
-        android:text="Detail UntilDate"/>
+        <TextView
+            android:id="@+id/tvWhen"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/tvDetailZipcodeCity"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:text="When"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff0f67b0"/>
 
-    <TextView
-        android:id="@+id/tvDetailPricePresale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvDetailFromDate"
-        android:layout_below="@+id/tvDetailFromDate"
-        android:layout_marginBottom="16dp"
-        android:text="Detail PricePresale"/>
+        <TextView
+            android:id="@+id/tvDetailFromDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvDetailDiskJockey1"
+            android:layout_alignStart="@+id/tvWhen"
+            android:layout_below="@+id/tvWhen"
+            android:layout_marginBottom="4dp"
+            android:text="Detail FromDate"/>
 
-    <TextView
-        android:id="@+id/tvDetailPriceAtTheDoor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/tvDetailPricePresale"
-        android:layout_marginLeft="16dp"
-        android:layout_toEndOf="@+id/tvDetailPricePresale"
-        android:text="Detail PriceAtTheDoor"/>
+        <TextView
+            android:id="@+id/tvDetailUntilDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvDetailFromDate"
+            android:layout_alignStart="@+id/tvDetailFromDate"
+            android:layout_below="@+id/tvDetailFromDate"
+            android:text="Detail UntilDate"/>
 
-    <TextView
-        android:id="@+id/tvDetailDiskJockey1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvDetailPricePresale"
-        android:layout_below="@+id/tvDetailPricePresale"
-        android:text="Detail DiskJockey1"/>
+        <TextView
+            android:id="@+id/tvPrice"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDetailUntilDate"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:text="Price"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff0f67b0"/>
 
-    <TextView
-        android:id="@+id/tvDetailDiskJockey2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvDetailDiskJockey1"
-        android:layout_below="@+id/tvDetailDiskJockey1"
-        android:text="Detail DiskJockey2"/>
+        <TextView
+            android:id="@+id/tvDetailPricePresale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvDetailDiskJockey1"
+            android:layout_alignStart="@+id/tvPrice"
+            android:layout_below="@+id/tvPrice"
+            android:layout_marginBottom="4dp"
+            android:text="Detail PricePresale"/>
 
-    <TextView
-        android:id="@+id/tvDetailDiskJockey3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/tvDetailDiskJockey2"
-        android:layout_below="@+id/tvDetailDiskJockey2"
-        android:text="Detail DiskJockey3"
-        />
+        <TextView
+            android:id="@+id/tvDetailPriceAtTheDoor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvDetailDiskJockey1"
+            android:layout_alignStart="@+id/tvDetailPricePresale"
+            android:layout_below="@+id/tvDetailPricePresale"
+            android:text="Detail PriceAtTheDoor"/>
 
-    <TextView
-        style="?android:attr/listSeparatorTextViewStyle"
-        android:id="@+id/tvWhen"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="When"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#ff0f67b0"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_below="@+id/tvDetailZipcodeCity"
-        android:layout_marginTop="32dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="8dp"/>
+        <TextView
+            android:id="@+id/tvDjs"
+            style="?android:attr/listSeparatorTextViewStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvDetailPriceAtTheDoor"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:text="DJ&apos;s"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#ff0f67b0"/>
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/imgDisk1"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignStart="@+id/tvDjs"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_below="@+id/tvDjs"
+            android:layout_gravity="center|left"
+            android:src="@drawable/ic_diskjockey"/>
+
+        <TextView
+            android:id="@+id/tvDetailDiskJockey1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imgDisk2"
+            android:layout_alignEnd="@+id/tvDjs"
+            android:layout_alignParentEnd="false"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_below="@+id/tvDjs"
+            android:layout_gravity="center|left"
+            android:layout_marginLeft="16dp"
+            android:layout_toEndOf="@+id/imgDisk1"
+            android:gravity="center_vertical"
+            android:text="Detail DiskJockey1"/>
+
+        <ImageView
+            android:id="@+id/imgDisk2"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignStart="@+id/imgDisk1"
+            android:layout_below="@+id/imgDisk1"
+            android:layout_toStartOf="@+id/tvDetailDiskJockey1"
+            android:src="@drawable/ic_diskjockey"/>
+
+        <TextView
+            android:id="@+id/tvDetailDiskJockey2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/imgDisk3"
+            android:layout_alignEnd="@+id/tvDetailDiskJockey1"
+            android:layout_alignStart="@+id/tvDetailDiskJockey1"
+            android:layout_alignTop="@+id/imgDisk2"
+            android:gravity="center_vertical"
+            android:text="Detail DiskJockey2"/>
+
+        <ImageView
+            android:id="@+id/imgDisk3"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignStart="@+id/imgDisk2"
+            android:layout_below="@+id/imgDisk2"
+            android:src="@drawable/ic_diskjockey"/>
+
+        <TextView
+            android:id="@+id/tvDetailDiskJockey3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imgDisk3"
+            android:layout_alignEnd="@+id/tvDetailDiskJockey2"
+            android:layout_alignStart="@+id/tvDetailDiskJockey2"
+            android:layout_below="@+id/tvDetailDiskJockey2"
+            android:gravity="center_vertical"
+            android:text="Detail DiskJockey3"/>
+
+        <Button
+            android:id="@+id/btnFindBOB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/imgDisk3"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="32dp"
+            android:background="#ff0f67b0"
+            android:text="Find BOB"
+            android:textColor="#ffffdd17"/>
+
+        <Button
+            android:id="@+id/btnImBOB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/btnFindBOB"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:background="#ff0f67b0"
+            android:text="I'm BOB"
+            android:textColor="#ffffdd17"/>
+
+    </RelativeLayout>
+</ScrollView>

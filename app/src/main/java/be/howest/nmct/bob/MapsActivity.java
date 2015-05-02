@@ -104,7 +104,6 @@ public class MapsActivity extends FragmentActivity
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(new ColorDrawable(this.getResources().getColor(R.color.bgStatusBar)).getColor());
-
     }
 
     private void showMapFragment()
@@ -123,6 +122,7 @@ public class MapsActivity extends FragmentActivity
             _mapFragment.getMapAsync(this);
 
             setTitle("BOB");
+            btnAddParty.setVisibility(View.VISIBLE);
         }
 
         _drawerLayout.closeDrawer(Gravity.LEFT);
@@ -337,10 +337,10 @@ public class MapsActivity extends FragmentActivity
 
         //go to PartyDetailsActivity
         Intent intent = new Intent(this, PartyDetailsActivity.class);
-        intent.putExtra(PartyDetailsActivity.EXTRA_DETAIL_ID, party.getID());
-        intent.putExtra(PartyDetailsActivity.EXTRA_DETAIL_NAME, party.getName());
+        intent.putExtra(PartyDetailsActivity.EXTRA_POSITION, party.getID());
 
-        startActivityForResult(intent, REQUEST_DETAIL);
+        startActivity(intent);
+        finish();
     }
 
     private void showAddNewPartyFragment(View v)

@@ -2,10 +2,12 @@ package be.howest.nmct.bob;
 
 
 import android.app.Fragment;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import be.howest.nmct.bob.admin.Party;
@@ -13,7 +15,7 @@ import be.howest.nmct.bob.admin.Party;
 
 public class PartyDetailsFragment extends Fragment
 {
-    private TextView imgDetailPicture;
+    private ImageView imgDetailPicture;
     private TextView tvDetailDescription;
     private TextView tvDetailAddress;
     private TextView tvDetailZipcodeCity;
@@ -57,8 +59,9 @@ public class PartyDetailsFragment extends Fragment
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_party_details, container, false);
 
-        //change title of actionbar to Party Name
-        getActivity().getActionBar().setTitle(getArguments().getString(ARG_DETAIL_NAME));
+        imgDetailPicture = (ImageView) v.findViewById(R.id.imgDetailPicture);
+        byte[] bitmapdata = getArguments().getByteArray(ARG_DETAIL_PICTURE);
+        imgDetailPicture.setImageBitmap(BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length));
 
         tvDetailDescription = (TextView) v.findViewById(R.id.tvDetailDescription);
         tvDetailDescription.setText(getArguments().getString(ARG_DETAIL_DESCRIPTION));
@@ -76,10 +79,10 @@ public class PartyDetailsFragment extends Fragment
         tvDetailUntilDate.setText(getArguments().getString(ARG_DETAIL_UNTILDATE));
 
         tvDetailPricePresale = (TextView) v.findViewById(R.id.tvDetailPricePresale);
-        tvDetailPricePresale.setText(getArguments().getString(ARG_DETAIL_PRICEPRESALE));
+        tvDetailPricePresale.setText("Presale: € " + getArguments().getDouble(ARG_DETAIL_PRICEPRESALE));
 
         tvDetailPriceAtTheDoor = (TextView) v.findViewById(R.id.tvDetailPriceAtTheDoor);
-        tvDetailPriceAtTheDoor.setText(getArguments().getString(ARG_DETAIL_PRICEATTHEDOOR));
+        tvDetailPriceAtTheDoor.setText("At the door: € " + getArguments().getDouble(ARG_DETAIL_PRICEATTHEDOOR));
 
         tvDetailDiskJockey1 = (TextView) v.findViewById(R.id.tvDetailDiskJockey1);
         tvDetailDiskJockey1.setText(getArguments().getString(ARG_DETAIL_DISKJOCKEY1));
@@ -121,4 +124,4 @@ public class PartyDetailsFragment extends Fragment
         pdfrag.setArguments(args);
         return pdfrag;
     }
-}
+   }

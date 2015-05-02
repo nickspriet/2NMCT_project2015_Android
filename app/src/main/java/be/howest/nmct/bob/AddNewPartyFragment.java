@@ -7,41 +7,68 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import com.android.datetimepicker.date.DatePickerDialog;
+import com.android.datetimepicker.time.RadialPickerLayout;
+import com.android.datetimepicker.time.TimePickerDialog;
 
 public class AddNewPartyFragment extends Fragment
+    implements
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener
 {
     private ImageView imgPartyPicture;
+    private EditText etPartyName;
     private EditText etStreet;
     private EditText etZipcode;
     private EditText etCity;
+    private EditText etFrom;
+    private EditText etUntil;
+    private Button btnSaveParty;
     private Uri _picture;
     private Marker _myMarker;
     private List<Address> _addresses;
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
     static final int REQUEST_IMAGE_CROP = 2;
+
+
+    private static final String TIME_PATTERN = "HH:mm";
+    private Calendar calendarFrom;
+    private Calendar calendarUntil;
+    private DateFormat dateFormat;
+    private SimpleDateFormat timeFormat;
 
 
     //constructor
@@ -61,14 +88,50 @@ public class AddNewPartyFragment extends Fragment
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_new_party, container, false);
 
-        etStreet = (EditText) v.findViewById(R.id.etStreet);
-        etStreet.setText(_addresses.get(0).getAddressLine(0));
+        //fill in address with data from marker
+        if (_addresses != null)
+        {
+            etStreet = (EditText) v.findViewById(R.id.etStreet);
+            etStreet.setText(_addresses.get(0).getAddressLine(0));
 
-        etZipcode    = (EditText) v.findViewById(R.id.etZipcode);
-        etZipcode.setText(_addresses.get(0).getPostalCode());
+            etZipcode    = (EditText) v.findViewById(R.id.etZipcode);
+            etZipcode.setText(_addresses.get(0).getPostalCode());
 
-        etCity = (EditText) v.findViewById(R.id.etCity);
-        etCity.setText(_addresses.get(0).getLocality());
+            etCity = (EditText) v.findViewById(R.id.etCity);
+            etCity.setText(_addresses.get(0).getLocality());
+        }
+
+        etPartyName = (EditText) v.findViewById(R.id.etPartyName);
+        etPartyName.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s)
+            {
+                if (s.length() > 0)
+                {
+                    etPartyName.getText().toString().toUpperCase();
+                    etPartyName.setTypeface(null, Typeface.BOLD);
+                }
+                else
+                {
+                    etPartyName.setTypeface(null, Typeface.NORMAL);
+                }
+            }
+        });
+
+
+        initDateTimePicker(v);
 
 
         imgPartyPicture = (ImageView) v.findViewById(R.id.imgPartyPicture);
@@ -82,8 +145,21 @@ public class AddNewPartyFragment extends Fragment
             }
         });
 
+        btnSaveParty = (Button) v.findViewById(R.id.btnSaveParty);
+        btnSaveParty.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                saveParty();
+            }
+        });
+
         return v;
     }
+
+
+
 
     private void dispatchTakePictureIntent()
     {
@@ -96,10 +172,53 @@ public class AddNewPartyFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
 
+        //get information of Marker-location
         Geocoder geocoder = new Geocoder(getActivity().getApplicationContext(), Locale.getDefault());
 
-        try { _addresses = geocoder.getFromLocation(_myMarker.getPosition().latitude, _myMarker.getPosition().longitude, 1); }
-        catch (IOException ioEx) { Log.d("ioex", ioEx.getMessage()); }
+        try
+        {
+            _addresses = geocoder.getFromLocation(_myMarker.getPosition().latitude, _myMarker.getPosition().longitude, 1);
+        }
+        catch (IOException ioEx)
+        {
+            Log.d("ioex", ioEx.getMessage());
+        }
+    }
+
+    private void initDateTimePicker(View v)
+    {
+        //DatePicker & TimePicker initialisation
+        dateFormat = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        timeFormat = new SimpleDateFormat(TIME_PATTERN, Locale.getDefault());
+
+        etFrom = (EditText) v.findViewById(R.id.etFrom);
+        etFrom.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (!hasFocus) return;
+
+                calendarFrom = Calendar.getInstance();
+                DatePickerDialog.newInstance(AddNewPartyFragment.this, calendarFrom.get(Calendar.YEAR), calendarFrom.get(Calendar.MONTH), calendarFrom.get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), "datePicker");
+
+            }
+        });
+
+        etUntil = (EditText) v.findViewById(R.id.etUntil);
+        etUntil.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if (!hasFocus) return;
+
+                calendarUntil = Calendar.getInstance();
+                DatePickerDialog.newInstance(AddNewPartyFragment.this, calendarUntil.get(Calendar.YEAR), calendarUntil.get(Calendar.MONTH), calendarUntil.get(Calendar.DAY_OF_MONTH)).show(getFragmentManager(), "datePicker");
+
+            }
+        });
+
     }
 
 
@@ -172,4 +291,58 @@ public class AddNewPartyFragment extends Fragment
     {
         super.onAttach(activity);
     }
+
+
+    @Override
+    public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth)
+    {
+        if (calendarFrom != null)
+        {
+            //open timepicker after datepicker
+            calendarFrom.set(year, monthOfYear, dayOfMonth);
+            TimePickerDialog.newInstance(AddNewPartyFragment.this, calendarFrom.get(Calendar.HOUR_OF_DAY), calendarFrom.get(Calendar.MINUTE), true).show(getFragmentManager(), "timePicker");
+        }
+        else if (calendarUntil != null)
+        {
+            //open timepicker after datepicker
+            calendarUntil.set(year, monthOfYear, dayOfMonth);
+            TimePickerDialog.newInstance(AddNewPartyFragment.this, calendarUntil.get(Calendar.HOUR_OF_DAY), calendarUntil.get(Calendar.MINUTE), true).show(getFragmentManager(), "timePicker");
+        }
+        else return;
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute)
+    {
+        if (calendarFrom != null)
+        {
+            calendarFrom.set(Calendar.HOUR_OF_DAY, hourOfDay);
+            updateFrom();
+        }
+        else if (calendarUntil != null)
+        {
+            calendarUntil.set(Calendar.MINUTE, minute);
+            updateUntil();
+        }
+        else return;
+    }
+
+    private void updateFrom()
+    {
+        etFrom.setText(dateFormat.format(calendarFrom.getTime()) + " " + timeFormat.format(calendarFrom.getTime()));
+        calendarFrom = null;
+    }
+
+    private void updateUntil()
+    {
+        etUntil.setText(dateFormat.format(calendarUntil.getTime()) + " " + timeFormat.format(calendarUntil.getTime()));
+        calendarUntil = null;
+    }
+
+
+
+    private void saveParty()
+    {
+    }
 }
+

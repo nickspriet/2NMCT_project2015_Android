@@ -1,11 +1,15 @@
 package be.howest.nmct.bob;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.Window;
+import android.view.WindowManager;
 
 import be.howest.nmct.bob.admin.Party;
 import be.howest.nmct.bob.admin.PartyAdmin;
@@ -13,8 +17,7 @@ import be.howest.nmct.bob.admin.PartyAdmin;
 
 public class PartyDetailsActivity extends FragmentActivity
 {
-    public static final String EXTRA_DETAIL_ID = "be.howest.nmct.bob.DETAIL_ID";
-    public static final String EXTRA_DETAIL_NAME = "be.howest.nmct.bob.DETAIL_NAME";
+    public static String EXTRA_POSITION = "be.howest.nmct.bob.EXTRA_POSITION";
     private PartyDetailsFragmentAdapter _pdfAdpater;
     private ViewPager _viewPager;
 
@@ -30,6 +33,47 @@ public class PartyDetailsActivity extends FragmentActivity
         // Set up the ViewPager with the sections adapter.
         _viewPager = (ViewPager) findViewById(R.id.pager);
         _viewPager.setAdapter(_pdfAdpater);
+
+        //set start position of ViewPager on the position of clicked item
+        _viewPager.setCurrentItem(getIntent().getIntExtra(EXTRA_POSITION, 0));
+
+        //change title of actionbar to Party Name
+        getActionBar().setTitle(PartyAdmin.getPartyByID(getIntent().getIntExtra(EXTRA_POSITION, 0)).getName());
+
+        _viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
+
+            }
+
+            @Override
+            public void onPageSelected(int position)
+            {
+                //change title of actionbar to Party Name
+                getActionBar().setTitle(PartyAdmin.getPartyByID(position).getName());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state)
+            {
+
+            }
+        });
+
+
+        changeStatusBarColor();
+    }
+
+    private void changeStatusBarColor()
+    {
+        //change color of statusbar
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(new ColorDrawable(this.getResources().getColor(R.color.bgStatusBar)).getColor());
+
     }
 
     private class PartyDetailsFragmentAdapter extends FragmentStatePagerAdapter

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:paddingBottom="32dp"
     tools:context="be.howest.nmct.bob.AddNewPartyFragment">
 
     <RelativeLayout
@@ -27,21 +26,30 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/imgPartyPicture"
             android:layout_alignParentStart="true"
-            android:layout_margin="16dp"
-            android:layout_marginStart="27dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:autoText="false"
+            android:background="#40000000"
             android:capitalize="characters"
+            android:textCursorDrawable = "@null"
+            android:gravity="center_vertical|center_horizontal"
             android:hint="Name of the party"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
             android:textColor="#ffffffff"
-            android:textStyle="bold"/>
+            android:textColorHint="#ffcccccc"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/tvDescription"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etDescription"
-            android:layout_alignStart="@+id/etDescription"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/etPartyName"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
             android:text="Description"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -51,25 +59,26 @@
             android:id="@+id/etDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etPartyName"
-            android:layout_alignStart="@+id/etPartyName"
+            android:layout_alignEnd="@+id/tvDescription"
+            android:layout_alignStart="@+id/tvDescription"
             android:layout_below="@+id/tvDescription"
             android:layout_marginTop="8dp"
             android:ems="10"
             android:hint="Add extra information"
-            android:inputType="textMultiLine"
-            />
+            android:inputType="textMultiLine"/>
 
         <TextView
-            android:id="@+id/tvAddress"
+            android:id="@+id/tvWhere"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etDescription"
-            android:layout_alignStart="@+id/etDescription"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/etDescription"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="32dp"
-            android:text="Address"
+            android:text="Where"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#ff0f67b0"/>
 
@@ -77,9 +86,9 @@
             android:id="@+id/etStreet"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/tvAddress"
-            android:layout_alignStart="@+id/tvAddress"
-            android:layout_below="@+id/tvAddress"
+            android:layout_alignEnd="@+id/tvWhere"
+            android:layout_alignStart="@+id/tvWhere"
+            android:layout_below="@+id/tvWhere"
             android:layout_marginTop="8dp"
             android:hint="Examplestreet 123"/>
 
@@ -109,9 +118,12 @@
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etCity"
-            android:layout_alignStart="@+id/etZipcode"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/etZipcode"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="32dp"
             android:text="When"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -121,53 +133,59 @@
             android:id="@+id/tvFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/etFrom"
             android:layout_alignStart="@+id/tvWhen"
             android:layout_below="@+id/tvWhen"
-            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
             android:text="From: "
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:labelFor="@+id/etFrom"/>
 
         <EditText
             android:id="@+id/etFrom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/etUntil"
+            android:layout_below="@+id/tvWhen"
+            android:layout_marginBottom="8dp"
+            android:layout_toEndOf="@+id/tvPresale"
             android:ems="10"
-            android:inputType="date"
-            android:layout_alignBaseline="@+id/tvFrom"
-            android:layout_alignBottom="@+id/tvFrom"
-            android:layout_alignEnd="@+id/tvWhen"
-            android:layout_alignStart="@+id/etUntil"/>
+            android:inputType="datetime"/>
 
         <TextView
             android:id="@+id/tvUntil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/etUntil"
             android:layout_alignStart="@+id/tvFrom"
-            android:layout_below="@+id/tvFrom"
-            android:layout_marginTop="16dp"
+            android:layout_alignTop="@+id/etUntil"
+            android:gravity="center_vertical"
             android:text="Until: "
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:labelFor="@+id/etUntil"/>
 
         <EditText
             android:id="@+id/etUntil"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="date"
-            android:layout_below="@+id/etFrom"
             android:layout_alignEnd="@+id/tvPrice"
+            android:layout_below="@+id/etFrom"
             android:layout_toEndOf="@+id/tvPresale"
-            android:layout_marginTop="8dp"
-            android:layout_alignStart="@+id/etCity"/>
+            android:ems="10"
+            android:inputType="datetime"
+            />
 
         <TextView
             android:id="@+id/tvPrice"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/tvDJs"
-            android:layout_alignStart="@+id/imgLogoDJ3"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/tvUntil"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="32dp"
             android:text="Price"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -177,30 +195,57 @@
             android:id="@+id/tvPresale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="23dp"
+            android:layout_alignBottom="@+id/etPresale"
+            android:layout_alignStart="@+id/tvPrice"
+            android:layout_below="@+id/tvPrice"
+            android:gravity="center_vertical"
             android:text="Presale: "
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:labelFor="@+id/etPresale"/>
+
+        <EditText
+            android:id="@+id/etPresale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/tvPrice"
             android:layout_below="@+id/tvPrice"
-            android:layout_alignStart="@+id/tvAtTheDoor"/>
+            android:layout_toEndOf="@+id/tvAtTheDoor"
+            android:ems="10"
+            android:inputType="number"/>
 
         <TextView
             android:id="@+id/tvAtTheDoor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_alignBottom="@+id/etAtTheDoor"
+            android:layout_alignStart="@+id/tvPresale"
+            android:layout_below="@+id/tvPresale"
+            android:gravity="center_vertical"
             android:text="At the door: "
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:labelFor="@+id/etAtTheDoor"/>
+
+        <EditText
+            android:id="@+id/etAtTheDoor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/etPresale"
             android:layout_below="@+id/tvPresale"
-            android:layout_alignStart="@+id/tvDJs"/>
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/tvAtTheDoor"
+            android:ems="10"
+            android:inputType="number"/>
 
         <TextView
             android:id="@+id/tvDJs"
             style="?android:attr/listSeparatorTextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/tvWhen"
-            android:layout_alignStart="@+id/tvUntil"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@+id/tvAtTheDoor"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_marginTop="32dp"
             android:text="DJ&apos;s"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -213,7 +258,9 @@
             android:layout_alignStart="@+id/tvDJs"
             android:layout_below="@+id/tvDJs"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_diskjockey"/>
+            android:src="@drawable/ic_diskjockey"
+            android:labelFor="@+id/etDiskJockey1"
+            android:longClickable="false"/>
 
         <EditText
             android:id="@+id/etDiskJockey"
@@ -233,7 +280,8 @@
             android:layout_alignStart="@+id/imgLogoDJ"
             android:layout_below="@+id/etDiskJockey"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_diskjockey"/>
+            android:src="@drawable/ic_diskjockey"
+            android:labelFor="@+id/etDiskJockey2"/>
 
         <EditText
             android:id="@+id/etDiskJockey2"
@@ -253,7 +301,8 @@
             android:layout_alignStart="@+id/imgLogoDJ"
             android:layout_below="@+id/etDiskJockey2"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_diskjockey"/>
+            android:src="@drawable/ic_diskjockey"
+            android:labelFor="@+id/etDiskJockey3"/>
 
         <EditText
             android:id="@+id/etDiskJockey3"
@@ -269,34 +318,16 @@
             android:id="@+id/btnSaveParty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etDiskJockey3"
-            android:layout_alignStart="@+id/imgLogoDJ3"
             android:layout_below="@+id/imgLogoDJ3"
+            android:layout_marginBottom="32dp"
             android:layout_marginTop="32dp"
-            android:text="Save party"
             android:background="#ff0f67b0"
+            android:text="Save party"
             android:textColor="#ffffdd17"
-            android:layout_marginBottom="16dp"/>
-
-        <EditText
-            android:id="@+id/editText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="date"
-            android:layout_alignBottom="@+id/tvPresale"
-            android:layout_alignEnd="@+id/etDiskJockey"
-            android:layout_alignStart="@+id/etUntil"/>
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="date"
-            android:layout_alignBottom="@+id/tvAtTheDoor"
-            android:layout_alignStart="@+id/editText"
-            android:layout_alignEnd="@+id/editText"/>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"/>
 
 
     </RelativeLayout>
