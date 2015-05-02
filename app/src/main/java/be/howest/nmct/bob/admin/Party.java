@@ -50,6 +50,10 @@ public class Party
     }
 
 
+    //empty contstructor
+    public Party()
+    {
+    }
 
     //getters
     public int getID()
@@ -130,5 +134,88 @@ public class Party
     public Double getLongitude()
     {
         return Longitude;
+    }
+
+
+    //setters
+
+    public void setID(int ID)
+    {
+        this.ID = ID;
+    }
+
+    public void setName(String name)
+    {
+        Name = name;
+    }
+
+    public void setDescription(String description)
+    {
+        Description = description;
+    }
+
+    public void setPicture(byte[] picture)
+    {
+        Picture = picture;
+    }
+
+    public void setAddress(String address)
+    {
+        Address = address;
+    }
+
+    public void setZipcode(String zipcode)
+    {
+        Zipcode = zipcode;
+    }
+
+    public void setCity(String city)
+    {
+        City = city;
+    }
+
+    public void setFromDate(Date fromDate)
+    {
+        FromDate = fromDate;
+    }
+
+    public void setUntilDate(Date untilDate)
+    {
+        UntilDate = untilDate;
+    }
+
+    public void setPricePresale(Double pricePresale)
+    {
+        PricePresale = pricePresale;
+    }
+
+    public void setPriceAtTheDoor(Double priceAtTheDoor)
+    {
+        PriceAtTheDoor = priceAtTheDoor;
+    }
+
+    public void setDiskJockey1(String diskJockey1)
+    {
+        DiskJockey1 = diskJockey1;
+    }
+
+    public void setDiskJockey2(String diskJockey2)
+    {
+        DiskJockey2 = diskJockey2;
+    }
+
+    public void setDiskJockey3(String diskJockey3)
+    {
+        DiskJockey3 = diskJockey3;
+    }
+
+    public void setLatitude(Double latitude)
+    {
+        Latitude = latitude;
+    }
+
+    public void setLongitude(Double longitude)
+    {
+        Longitude = longitude;
     }
 }

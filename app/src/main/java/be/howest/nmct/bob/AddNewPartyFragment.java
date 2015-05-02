@@ -12,6 +12,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -26,6 +27,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -43,6 +45,10 @@ import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
 
+import be.howest.nmct.bob.admin.Party;
+import be.howest.nmct.bob.admin.PartyAdmin;
+import be.howest.nmct.bob.helper.NetworkUtils;
+
 public class AddNewPartyFragment extends Fragment
     implements
         DatePickerDialog.OnDateSetListener,
@@ -50,11 +56,17 @@ public class AddNewPartyFragment extends Fragment
 {
     private ImageView imgPartyPicture;
     private EditText etPartyName;
+    private EditText etDescription;
     private EditText etStreet;
     private EditText etZipcode;
     private EditText etCity;
     private EditText etFrom;
     private EditText etUntil;
+    private EditText etPresale;
+    private EditText etAtTheDoor;
+    private EditText etDiskJockey1;
+    private EditText etDiskJockey2;
+    private EditText etDiskJockey3;
     private Button btnSaveParty;
     private Uri _picture;
     private Marker _myMarker;
@@ -88,18 +100,8 @@ public class AddNewPartyFragment extends Fragment
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_new_party, container, false);
 
-        //fill in address with data from marker
-        if (_addresses != null)
-        {
-            etStreet = (EditText) v.findViewById(R.id.etStreet);
-            etStreet.setText(_addresses.get(0).getAddressLine(0));
-
-            etZipcode    = (EditText) v.findViewById(R.id.etZipcode);
-            etZipcode.setText(_addresses.get(0).getPostalCode());
-
-            etCity = (EditText) v.findViewById(R.id.etCity);
-            etCity.setText(_addresses.get(0).getLocality());
-        }
+        fillAddressWithDataFromMarker(v);
+        initDateTimePicker(v);
 
         etPartyName = (EditText) v.findViewById(R.id.etPartyName);
         etPartyName.addTextChangedListener(new TextWatcher()
@@ -130,10 +132,6 @@ public class AddNewPartyFragment extends Fragment
             }
         });
 
-
-        initDateTimePicker(v);
-
-
         imgPartyPicture = (ImageView) v.findViewById(R.id.imgPartyPicture);
         imgPartyPicture.setOnClickListener(new View.OnClickListener()
         {
@@ -144,6 +142,13 @@ public class AddNewPartyFragment extends Fragment
                 dispatchTakePictureIntent();
             }
         });
+
+        etDescription = (EditText) v.findViewById(R.id.etDescription);
+        etPresale = (EditText) v.findViewById(R.id.etPresale);
+        etAtTheDoor = (EditText) v.findViewById(R.id.etAtTheDoor);
+        etDiskJockey1 = (EditText) v.findViewById(R.id.etDiskJockey1);
+        etDiskJockey2 = (EditText) v.findViewById(R.id.etDiskJockey2);
+        etDiskJockey3 = (EditText) v.findViewById(R.id.etDiskJockey3);
 
         btnSaveParty = (Button) v.findViewById(R.id.btnSaveParty);
         btnSaveParty.setOnClickListener(new View.OnClickListener()
@@ -158,7 +163,45 @@ public class AddNewPartyFragment extends Fragment
         return v;
     }
 
+    private void saveParty()
+    {
+        Party newParty = new Party();
+        newParty.setID(PartyAdmin.getParties().size());
+        newParty.setName(etPartyName.getText().toString());
+        newParty.setDescription(etDescription.getText().toString());
+        //newParty.setPicture();
+        newParty.setAddress(etStreet.getText().toString());
+        newParty.setZipcode(etZipcode.getText().toString());
+        newParty.setCity(etCity.getText().toString());
+        //newParty.setFromDate(etFrom.getText().toString());
+        //newParty.setUntilDate(etUntil.getText().toString());
+        newParty.setPricePresale(Double.parseDouble(etPresale.getText().toString()));
+        newParty.setPriceAtTheDoor(Double.parseDouble(etAtTheDoor.getText().toString()));
+        newParty.setDiskJockey1(etDiskJockey1.getText().toString());
+        newParty.setDiskJockey2(etDiskJockey2.getText().toString());
+        newParty.setDiskJockey3(etDiskJockey3.getText().toString());
+        newParty.setLatitude(_myMarker.getPosition().latitude);
+        newParty.setLongitude(_myMarker.getPosition().longitude);
 
+        //post party to server
+        new SubmitPartyTask().execute(newParty);
+    }
+
+    private void fillAddressWithDataFromMarker(View v)
+    {
+        //fill in address with data from marker
+        if (_addresses != null)
+        {
+            etStreet = (EditText) v.findViewById(R.id.etStreet);
+            etStreet.setText(_addresses.get(0).getAddressLine(0));
+
+            etZipcode    = (EditText) v.findViewById(R.id.etZipcode);
+            etZipcode.setText(_addresses.get(0).getPostalCode());
+
+            etCity = (EditText) v.findViewById(R.id.etCity);
+            etCity.setText(_addresses.get(0).getLocality());
+        }
+    }
 
 
     private void dispatchTakePictureIntent()
@@ -341,8 +384,20 @@ public class AddNewPartyFragment extends Fragment
 
 
 
-    private void saveParty()
+    public class SubmitPartyTask extends AsyncTask<Party, Void, Boolean>
     {
+
+        @Override
+        protected Boolean doInBackground(Party... params)
+        {
+            if (writeParty(params[0]) != null) return true;
+            else return false;
+        }
+    }
+
+    private String writeParty(Party party)
+    {
+        return null;
     }
 }
 
