@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:baselineAligned="false">
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
 
     <ImageView
+        android:id="@+id/imgPicture"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:id="@+id/imgPicture"
         android:layout_margin="10dp"
         android:scaleType="centerCrop"/>
 
     <TextView
+        android:id="@+id/tvName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Name party..."
-        android:id="@+id/tvName"
-        android:textColor="#ff0f67b0"
         android:layout_alignTop="@+id/imgPicture"
-        android:layout_toEndOf="@+id/imgPicture"/>
+        android:layout_toEndOf="@+id/imgPicture"
+        android:text="Name party..."
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="#ff0f67b0"/>
 
     <TextView
+        android:id="@+id/tvZipcodeCity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Zipcode City"
-        android:textColor="#ff000000"
-        android:id="@+id/tvZipcodeCity"
         android:layout_alignBottom="@+id/imgPicture"
-        android:layout_alignStart="@+id/tvName"/>
+        android:layout_alignStart="@+id/tvName"
+        android:text="Zipcode City"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#ff000000"/>
 
 </RelativeLayout>

@@ -143,7 +143,7 @@ public class MenuFragment extends ListFragment
             tvMenuTitle.setTextColor(Color.GRAY);
         }
 
-        startRippleAnimation(getListView().getChildAt(pos));
+        //startRippleAnimation(getListView().getChildAt(pos));
 
         //highlight active menu-item
         getListView().getChildAt(pos).findViewById(R.id.layoutMenuItem).setBackgroundColor(Color.LTGRAY);

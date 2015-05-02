@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Address;
@@ -164,12 +166,56 @@ public class AddNewPartyFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                saveParty();
+                if (isFormComplete()) saveParty();
 
             }
         });
 
         return v;
+    }
+
+    private boolean isFormComplete()
+    {
+        if (imgPartyPicture.getDrawable() != null &&
+                !etPartyName.getText().toString().isEmpty() &&
+                !etDescription.getText().toString().isEmpty() &&
+                !etAddress.getText().toString().isEmpty() &&
+                !etZipcode.getText().toString().isEmpty() &&
+                !etCity.getText().toString().isEmpty() &&
+                !etFrom.getText().toString().isEmpty() &&
+                !etUntil.getText().toString().isEmpty())
+        {
+            //everything is filled in correctly !
+            return true;
+        }
+        else
+        {
+            //highlight all the required fields that are not filled in !
+            if (imgPartyPicture.getDrawable() == null) highlightIncompleteFields(imgPartyPicture);
+            if (etPartyName.getText().toString().isEmpty()) highlightIncompleteFields(etPartyName);
+            if (etDescription.getText().toString().isEmpty()) highlightIncompleteFields(etDescription);
+            if (etAddress.getText().toString().isEmpty()) highlightIncompleteFields(etAddress);
+            if (etZipcode.getText().toString().isEmpty()) highlightIncompleteFields(etZipcode);
+            if (etCity.getText().toString().isEmpty()) highlightIncompleteFields(etCity);
+            if (etFrom.getText().toString().isEmpty()) highlightIncompleteFields(etFrom);
+            if (etUntil.getText().toString().isEmpty()) highlightIncompleteFields(etUntil);
+
+            return false;
+        }
+    }
+
+    private void highlightIncompleteFields(View field)
+    {
+        if (field instanceof ImageView)
+        {
+            ImageView imgv = (ImageView) field;
+
+        }
+        else
+        {
+            EditText et = (EditText) field;
+            et.setBackgroundTintList(ColorStateList.valueOf(Color.RED));
+        }
     }
 
     private void saveParty()
@@ -182,12 +228,11 @@ public class AddNewPartyFragment extends Fragment
                 newParty.setID(PartyAdmin.getParties().size());
                 newParty.setName(etPartyName.getText().toString());
                 newParty.setDescription(etDescription.getText().toString());
-//
-//                Bitmap bmPicture = ((BitmapDrawable) imgPartyPicture.getDrawable()).getBitmap();
-//                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-//                bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
-//                newParty.setPicture(stream.toByteArray());
 
+                Bitmap bmPicture = ((BitmapDrawable) imgPartyPicture.getDrawable()).getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
+                newParty.setPicture(stream.toByteArray());
 
                 newParty.setAddress(etAddress.getText().toString());
                 newParty.setZipcode(etZipcode.getText().toString());
@@ -199,7 +244,6 @@ public class AddNewPartyFragment extends Fragment
 
                     newParty.setFromDate(dateformat.parse(etFrom.getText().toString()));
                     newParty.setUntilDate(dateformat.parse(etUntil.getText().toString()));
-
                 }
                 catch (ParseException e)
                 {
@@ -207,11 +251,15 @@ public class AddNewPartyFragment extends Fragment
                 }
 
 
-                newParty.setPricePresale(Double.parseDouble(etPresale.getText().toString()));
-                newParty.setPriceAtTheDoor(Double.parseDouble(etAtTheDoor.getText().toString()));
+                if (!etPresale.getText().toString().isEmpty()) newParty.setPricePresale(Double.parseDouble(etPresale.getText().toString()));
+                else newParty.setPricePresale(0.0);
+                if (!etAtTheDoor.getText().toString().isEmpty()) newParty.setPriceAtTheDoor(Double.parseDouble(etAtTheDoor.getText().toString()));
+                else newParty.setPriceAtTheDoor(0.0);
+
                 newParty.setDiskJockey1(etDiskJockey1.getText().toString());
                 newParty.setDiskJockey2(etDiskJockey2.getText().toString());
                 newParty.setDiskJockey3(etDiskJockey3.getText().toString());
+
                 newParty.setLatitude(_lat);
                 newParty.setLongitude(_long);
 
@@ -242,8 +290,7 @@ public class AddNewPartyFragment extends Fragment
     private void dispatchTakePictureIntent()
     {
         Intent takePicutreIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null)
-            startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
+        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null) startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
@@ -311,36 +358,10 @@ public class AddNewPartyFragment extends Fragment
                 //get the Uri for the caputured image
                 _picture = data.getData();
 
-                //crop image
-                //CropImage();
-
                 imgPartyPicture.setImageBitmap((Bitmap) data.getExtras().get("data"));
-
-            }
-            else if (requestCode == REQUEST_IMAGE_CROP)
-            {
-                //get cropped image
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = extras.getParcelable("data");
-                imgPartyPicture.setImageBitmap(imageBitmap);
             }
         }
     }
-
-
-//    private void CropImage()
-//    {
-//        Intent intent = new Intent("com.android.camera.action.CROP");
-//        intent.setDataAndType(_picture, "image/*");
-//        intent.putExtra("crop", true);
-//        intent.putExtra("aspectX", 1);
-//        intent.putExtra("aspectY", 1);
-//        intent.putExtra("outputX", 415);
-//        intent.putExtra("outputY", 200);
-//        intent.putExtra("scale", true);
-//        intent.putExtra("return-data", true);
-//        startActivityForResult(intent, REQUEST_IMAGE_CROP);
-//    }
 
 
 //    public AddNewPartyFragment newInstance(Marker myLocationMarker)
@@ -410,7 +431,7 @@ public class AddNewPartyFragment extends Fragment
 
     private void updateFrom()
     {
-        int yearFrom = calendarFrom.get(Calendar.YEAR);
+        int yearFrom = calendarFrom.get(Calendar.YEAR) - 1900;  //zie Date-klasse (Gregoriaanse tijd start vanaf 1900)
         int monthFrom = calendarFrom.get(Calendar.MONTH);
         int dayFrom = calendarFrom.get(Calendar.DAY_OF_MONTH);
         int hourFrom = calendarFrom.get(Calendar.HOUR_OF_DAY);
@@ -425,7 +446,7 @@ public class AddNewPartyFragment extends Fragment
 
     private void updateUntil()
     {
-        int yearUntil = calendarUntil.get(Calendar.YEAR);
+        int yearUntil = calendarUntil.get(Calendar.YEAR) - 1900;    //zie Date-klasse (Gregoriaanse tijd start vanaf 1900)
         int monthUntil = calendarUntil.get(Calendar.MONTH);
         int dayUntil = calendarUntil.get(Calendar.DAY_OF_MONTH);
         int hourUntil = calendarUntil.get(Calendar.HOUR_OF_DAY);
@@ -447,26 +468,22 @@ public class AddNewPartyFragment extends Fragment
         {
             writeParty(params[0]);
             return true;
-//            if (writeParty(params[0]) != null) return true;
-//            else return false;
+            //if (writeParty(params[0]) != null) return true;
+            // else return false;
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean)
         {
-            Toast.makeText(getActivity().getApplicationContext(), "New party has been created", Toast.LENGTH_SHORT).show();
+            if (aBoolean) Toast.makeText(getActivity().getApplicationContext(), "New party has been created", Toast.LENGTH_SHORT).show();
         }
     }
 
     private String writeParty(Party party)
     {
-        String result = NetworkUtils.post3("https://student.howest.be/nick.spriet/BOB/parties3.php", party);
-
-//        if (result != null)
-//            Toast.makeText(getActivity().getApplicationContext(), "New party: (" + party.getName() + ") has been created", Toast.LENGTH_SHORT).show();
-
+        String result = NetworkUtils.post("https://student.howest.be/nick.spriet/BOB/parties3.php", party);
+        NetworkUtils.uploadImage("https://student.howest.be/nick.spriet/BOB/images/", party, _picture);
         return result;
-
     }
 }
 

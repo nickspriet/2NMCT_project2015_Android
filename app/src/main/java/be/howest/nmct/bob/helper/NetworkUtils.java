@@ -1,5 +1,6 @@
 package be.howest.nmct.bob.helper;
 
+import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,12 +16,15 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -38,6 +42,67 @@ import be.howest.nmct.bob.admin.Party;
  */
 public class NetworkUtils
 {
+    //http://stackoverflow.com/questions/2938502/sending-post-data-in-android
+    public static String post(String url, Party party)
+    { // Create a new HttpClient and Post Header
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpPost httppost = new HttpPost(url);
+
+        try
+        {
+            // Add your data
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            nameValuePairs.add(new BasicNameValuePair("PartyID", String.valueOf(party.getID())));
+            nameValuePairs.add(new BasicNameValuePair("PartyName", party.getName()));
+            nameValuePairs.add(new BasicNameValuePair("Description", party.getDescription()));
+            nameValuePairs.add(new BasicNameValuePair("Address", party.getAddress()));
+            nameValuePairs.add(new BasicNameValuePair("Zipcode", party.getZipcode()));
+            nameValuePairs.add(new BasicNameValuePair("City", party.getCity()));
+            nameValuePairs.add(new BasicNameValuePair("FromDate", party.getFromDate().toString()));
+            nameValuePairs.add(new BasicNameValuePair("UntilDate", party.getUntilDate().toString()));
+            nameValuePairs.add(new BasicNameValuePair("PricePresale", party.getPricePresale().toString()));
+            nameValuePairs.add(new BasicNameValuePair("PriceAtTheDoor", party.getPriceAtTheDoor().toString()));
+            nameValuePairs.add(new BasicNameValuePair("DiskJockey1", party.getDiskJockey1()));
+            nameValuePairs.add(new BasicNameValuePair("DiskJockey2", party.getDiskJockey2()));
+            nameValuePairs.add(new BasicNameValuePair("DiskJockey3", party.getDiskJockey3()));
+            nameValuePairs.add(new BasicNameValuePair("Latitude", party.getLatitude().toString()));
+            nameValuePairs.add(new BasicNameValuePair("Longitude", party.getLongitude().toString()));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            // Execute HTTP Post Request
+            HttpResponse response = httpclient.execute(httppost);
+
+            return response.toString();
+
+        }
+        catch (ClientProtocolException e)
+        {
+            Log.d("clientprotocolex", e.toString());
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            Log.d("IOexception", e.toString());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void uploadImage(String url, Party party, Uri sourceUri)
+    {
+        String imgName = party.getID() + ".png";
+        byte[] imgByte = party.getPicture();
+
+        HttpURLConnection conn = null;
+        DataOutputStream dataOutputStream = null;
+
+    }
+
+
+    //region **Probeersels POST**
+    /*
+    //https://www.youtube.com/watch?v=MdyZKewSwFg
     public static String post(String url, Party party)
     {
         if (url == null || party == null) return null;
@@ -109,7 +174,7 @@ public class NetworkUtils
         return null;
     }
 
-
+    //http://stackoverflow.com/questions/9767952/how-to-add-parameters-to-httpurlconnection-using-post
     public static String post2(String url, Party party)
     {
         if (url == null || party == null) return null;
@@ -117,20 +182,19 @@ public class NetworkUtils
         //building paramaters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("PartyName", party.getName()));
-//        params.add(new BasicNameValuePair("Description", party.getDescription()));
-//        //params.add(new BasicNameValuePair("PartyPicture", new String(party.getPicture())));
-//        params.add(new BasicNameValuePair("Address", party.getAddress()));
-//        params.add(new BasicNameValuePair("Zipcode", party.getZipcode()));
-//        params.add(new BasicNameValuePair("City", party.getCity()));
-//        params.add(new BasicNameValuePair("From", party.getFromDate().toString()));
-//        params.add(new BasicNameValuePair("Until", party.getUntilDate().toString()));
-//        params.add(new BasicNameValuePair("Presale", party.getPricePresale().toString()));
-//        params.add(new BasicNameValuePair("AtTheDoor", party.getPriceAtTheDoor().toString()));
-//        params.add(new BasicNameValuePair("DiskJockey1", party.getDiskJockey1()));
-//        params.add(new BasicNameValuePair("DiskJockey2", party.getDiskJockey2()));
-//        params.add(new BasicNameValuePair("DiskJockey3", party.getDiskJockey3()));
-//        params.add(new BasicNameValuePair("Latitude", party.getLatitude().toString()));
-//        params.add(new BasicNameValuePair("Longitude", party.getLongitude().toString()));
+        params.add(new BasicNameValuePair("Description", party.getDescription()));
+        params.add(new BasicNameValuePair("Address", party.getAddress()));
+        params.add(new BasicNameValuePair("Zipcode", party.getZipcode()));
+        params.add(new BasicNameValuePair("City", party.getCity()));
+        params.add(new BasicNameValuePair("From", party.getFromDate().toString()));
+        params.add(new BasicNameValuePair("Until", party.getUntilDate().toString()));
+        params.add(new BasicNameValuePair("Presale", party.getPricePresale().toString()));
+        params.add(new BasicNameValuePair("AtTheDoor", party.getPriceAtTheDoor().toString()));
+        params.add(new BasicNameValuePair("DiskJockey1", party.getDiskJockey1()));
+        params.add(new BasicNameValuePair("DiskJockey2", party.getDiskJockey2()));
+        params.add(new BasicNameValuePair("DiskJockey3", party.getDiskJockey3()));
+        params.add(new BasicNameValuePair("Latitude", party.getLatitude().toString()));
+        params.add(new BasicNameValuePair("Longitude", party.getLongitude().toString()));
 
         BufferedReader in = null;
 
@@ -201,37 +265,6 @@ public class NetworkUtils
 
         return result.toString();
     }
-
-    public static String post3(String s, Party party)
-    { // Create a new HttpClient and Post Header
-        HttpClient httpclient = new DefaultHttpClient();
-        HttpPost httppost = new HttpPost(s);
-
-        try
-        {
-            // Add your data
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            nameValuePairs.add(new BasicNameValuePair("PartyID", String.valueOf(party.getID())));
-            nameValuePairs.add(new BasicNameValuePair("PartyName", party.getName()));
-            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-            // Execute HTTP Post Request
-            HttpResponse response = httpclient.execute(httppost);
-
-            return response.toString();
-
-        }
-        catch (ClientProtocolException e)
-        {
-            Log.d("clientprotocolex", e.toString());
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            Log.d("IOexception", e.toString());
-            e.printStackTrace();
-        }
-
-        return null;
-    }
+    */
+    //endregion
 }

@@ -1,6 +1,7 @@
 package be.howest.nmct.bob.admin;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,8 @@ public class Party
     private String DiskJockey3;
     private Double Latitude;
     private Double Longitude;
+
+    private Uri ImgURI;
 
     //constructor
     public Party(int id, String name, String description, byte[] picture, String address, String zipcode, String city, Date fromDate, Date untilDate, Double pricePresale, Double priceAtTheDoor, String diskJockey1, String diskJockey2, String diskJockey3, Double latitude, Double longitude)
@@ -138,7 +141,6 @@ public class Party
 
 
     //setters
-
     public void setID(int ID)
     {
         this.ID = ID;
@@ -218,4 +220,10 @@ public class Party
     {
         Longitude = longitude;
     }
+
+
+
+    public Uri getImgURI() { return ImgURI; }
+    public void setImgURI(Uri imgURI) { ImgURI = imgURI; }
+
 }

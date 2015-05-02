@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
 //klasse voor de verschillende kolommen uit de MatrixCursor
 public class Contract
 {
+    //tabel Parties
     public interface PartyColumns extends BaseColumns
     {
         public static final String COLUMN_PARTY_ID = "party_id";
@@ -27,5 +28,19 @@ public class Contract
         public static final String COLUMN_PARTY_DISKJOCKEY3 = "party_diskjockey3";
         public static final String COLUMN_PARTY_LATITUDE = "party_latitude";
         public static final String COLUMN_PARTY_LONGITUDE = "party_longitude";
+    }
+
+
+    //tabel Bobs
+    public interface BobColumns extends BaseColumns
+    {
+        public static final String COLUMN_BOB_ID = "bob_id";
+        public static final String COLUMN_BOB_LASTNAME = "bob_lastname";
+        public static final String COLUMN_BOB_FIRSTNAME = "bob_firstname";
+        public static final String COLUMN_BOB_CAR = "bob_car";
+        public static final String COLUMN_BOB_TELEPHONE = "bob_telephone";
+        public static final String COLUMN_BOB_SEATS = "bob_seats";
+        public static final String COLUMN_BOB_LATITUDE = "bob_latitude";
+        public static final String COLUMN_BOB_LONGITUDE= "bob_longitude";
     }
 }
