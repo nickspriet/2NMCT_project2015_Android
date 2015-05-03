@@ -7,6 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -29,6 +34,7 @@ import com.melnykov.fab.FloatingActionButton;
 
 import be.howest.nmct.bob.admin.Party;
 import be.howest.nmct.bob.admin.PartyAdmin;
+import be.howest.nmct.bob.helper.BitmapToMutable;
 import be.howest.nmct.bob.loader.Contract;
 import be.howest.nmct.bob.loader.PartyLoader;
 
@@ -204,6 +210,26 @@ public class MapsActivity extends FragmentActivity
         // Register the listener with the Location Manager to receive location updates
         //_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, _locationListener);
         //_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, _locationListener);
+    }
+
+    private void addPartyMarkers(final GoogleMap googleMap)
+    {
+        //Place marker for each party
+        for (Party party : PartyAdmin.getParties())
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(party.getPicture(), 0, party.getPicture().length);
+            bitmap = BitmapToMutable.convertToMutable(bitmap);
+            bitmap.setWidth(30);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, 30, 30);
+
+            MarkerOptions partyOptions = new MarkerOptions()
+                    .position(new LatLng(party.getLatitude(), party.getLongitude()))
+                    .title(party.getName())
+                    .snippet(party.getCity())
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+
+            googleMap.addMarker(partyOptions);
+        }
     }
 
     private void initLocationListener(final GoogleMap googleMap)
@@ -391,6 +417,8 @@ public class MapsActivity extends FragmentActivity
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
     {
         _partiesFragment._pAdapter.swapCursor(cursor);
+        addPartyMarkers(_map);
+
     }
 
     @Override

@@ -17,6 +17,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -90,6 +91,8 @@ public class AddNewPartyFragment extends Fragment
 
     private double _lat;
     private double _long;
+    private Bitmap _imgBitmap;
+    private String mCurrentPhotoPath;
 
     //constructor
     public AddNewPartyFragment()
@@ -166,8 +169,11 @@ public class AddNewPartyFragment extends Fragment
             @Override
             public void onClick(View v)
             {
+                //save party in database
                 if (isFormComplete()) saveParty();
 
+                //upload image to server
+                new UploadPictureTask().execute(_imgBitmap);
             }
         });
 
@@ -289,8 +295,48 @@ public class AddNewPartyFragment extends Fragment
 
     private void dispatchTakePictureIntent()
     {
-        Intent takePicutreIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePicutreIntent.resolveActivity(getActivity().getPackageManager()) != null) startActivityForResult(takePicutreIntent, REQUEST_IMAGE_CAPTURE);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null)
+        {
+            File photoFile = null;
+
+            try
+            {
+                photoFile = createImageFile();
+
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            if (photoFile != null)
+            {
+                //takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+
+    //http://developer.android.com/training/camera/photobasics.html
+    private File createImageFile() throws IOException
+    {
+        // Create an image file name
+        String storageDir = Environment.getExternalStorageDirectory() + "/picupload";
+        File dir = new File(storageDir);
+        if (!dir.exists()) dir.mkdir();
+
+        File image = new File(storageDir + "/", PartyAdmin.getParties().size() + ".jpg");
+        if (image.exists())
+        {
+            image.delete();
+            image = new File(storageDir + "/", PartyAdmin.getParties().size() + ".jpg");
+        }
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -358,7 +404,8 @@ public class AddNewPartyFragment extends Fragment
                 //get the Uri for the caputured image
                 _picture = data.getData();
 
-                imgPartyPicture.setImageBitmap((Bitmap) data.getExtras().get("data"));
+                _imgBitmap = (Bitmap) data.getExtras().get("data");
+                imgPartyPicture.setImageBitmap(_imgBitmap);
             }
         }
     }
@@ -466,10 +513,8 @@ public class AddNewPartyFragment extends Fragment
         @Override
         protected Boolean doInBackground(Party... params)
         {
-            writeParty(params[0]);
-            return true;
-            //if (writeParty(params[0]) != null) return true;
-            // else return false;
+            if (writeParty(params[0]) != null) return true;
+            else return false;
         }
 
         @Override
@@ -482,7 +527,28 @@ public class AddNewPartyFragment extends Fragment
     private String writeParty(Party party)
     {
         String result = NetworkUtils.post("https://student.howest.be/nick.spriet/BOB/parties3.php", party);
-        NetworkUtils.uploadImage("https://student.howest.be/nick.spriet/BOB/images/", party, _picture);
+        return result;
+    }
+
+    private class UploadPictureTask extends AsyncTask<Bitmap, Void, Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(Bitmap... params)
+        {
+            if (UploadImage(params[0]) != null) return true;
+            else return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean)
+        {
+            if (aBoolean) Toast.makeText(getActivity().getApplicationContext(), "Image uploaded sucessfully", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private String UploadImage(Bitmap param)
+    {
+        String result = NetworkUtils.uploadImage("https://student.howest.be/nick.spriet/BOB/uploadimage.php", param, mCurrentPhotoPath);
         return result;
     }
 }
