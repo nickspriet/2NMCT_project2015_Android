@@ -219,8 +219,19 @@ public class MapsActivity extends FragmentActivity
         {
             Bitmap bitmap = BitmapFactory.decodeByteArray(party.getPicture(), 0, party.getPicture().length);
             bitmap = BitmapToMutable.convertToMutable(bitmap);
-            bitmap.setWidth(30);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, 30, 30);
+
+            //crop & scale bitmap
+            if (bitmap.getWidth() >= bitmap.getHeight())
+            {
+                bitmap = Bitmap.createBitmap(bitmap, bitmap.getWidth()/2 - bitmap.getHeight()/2, 0, bitmap.getHeight(), bitmap.getHeight());
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+            }
+            else
+            {
+                bitmap = Bitmap.createBitmap(bitmap, 0, bitmap.getHeight()/2 - bitmap.getWidth()/2, bitmap.getWidth(), bitmap.getWidth());
+                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+            }
+
 
             MarkerOptions partyOptions = new MarkerOptions()
                     .position(new LatLng(party.getLatitude(), party.getLongitude()))

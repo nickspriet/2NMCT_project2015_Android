@@ -240,7 +240,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="32dp"
             android:background="#ff0f67b0"
-            android:text="Find BOB"
+            android:text="Find a BOB"
             android:textColor="#ffffdd17"/>
 
         <Button
