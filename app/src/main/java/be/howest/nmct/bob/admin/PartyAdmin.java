@@ -7,17 +7,23 @@ import java.util.List;
  */
 public class PartyAdmin
 {
+    //property
     private static List<Party> parties;
 
+
+    //getter
     public static List<Party> getParties()
     {
         return parties;
     }
 
+    //setter
     public static void setParties(List<Party> lijstparties)
     {
         PartyAdmin.parties = lijstparties;
     }
+
+
 
 
     public static Party getPartyByID(int partyid)

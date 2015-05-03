@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:id="@+id/card_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imgPerson"
+            android:src="@drawable/ic_person"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="8dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="FirstName"
+            android:id="@+id/tvFirstName"
+            android:layout_alignBottom="@+id/imgPerson"
+            android:layout_toEndOf="@+id/imgPerson"
+            android:layout_alignTop="@+id/imgPerson"
+            android:gravity="center_vertical"
+            android:layout_marginRight="8dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="L."
+            android:id="@+id/tvLastName"
+            android:layout_alignTop="@+id/tvFirstName"
+            android:layout_toEndOf="@+id/tvFirstName"
+            android:layout_alignBottom="@+id/tvFirstName"
+            android:gravity="center_vertical"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/imgTelephone"
+            android:src="@drawable/ic_telephone"
+            android:layout_below="@+id/imgPerson"
+            android:layout_alignEnd="@+id/imgPerson"
+            android:layout_marginRight="8dp"
+            android:maxHeight="25dp"
+            android:maxWidth="25dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="+32 (0) 471 23 45 67"
+            android:id="@+id/tvTelephone"
+            android:layout_alignTop="@+id/imgTelephone"
+            android:layout_alignStart="@+id/tvFirstName"
+            android:layout_alignBottom="@+id/imgTelephone"
+            android:gravity="center_vertical"
+            android:layout_alignParentEnd="true"/>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/imgCar"
+            android:src="@drawable/ic_car"
+            android:layout_below="@+id/imgTelephone"
+            android:layout_alignStart="@+id/imgTelephone"
+            android:layout_marginRight="8dp"
+            android:maxWidth="25dp"
+            android:maxHeight="25dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Seat Ibiza"
+            android:id="@+id/tvCar"
+            android:gravity="center_vertical"
+            android:layout_alignBottom="@+id/imgCar"
+            android:layout_below="@+id/tvTelephone"
+            android:layout_alignEnd="@+id/tvTelephone"
+            android:layout_alignStart="@+id/tvTelephone"/>
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:id="@+id/imgSeats"
+            android:src="@drawable/ic_seats"
+            android:layout_marginRight="8dp"
+            android:layout_below="@+id/imgCar"
+            android:layout_alignEnd="@+id/imgPerson"
+            android:maxWidth="25dp"
+            android:maxHeight="25dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="# seats"
+            android:id="@+id/tvSeats"
+            android:gravity="center_vertical"
+            android:layout_below="@+id/tvCar"
+            android:layout_alignBottom="@+id/imgSeats"
+            android:layout_alignEnd="@+id/tvCar"
+            android:layout_alignStart="@+id/tvCar"/>
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

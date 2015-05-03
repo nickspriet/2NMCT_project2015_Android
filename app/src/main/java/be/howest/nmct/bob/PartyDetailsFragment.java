@@ -1,12 +1,14 @@
 package be.howest.nmct.bob;
 
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +28,9 @@ public class PartyDetailsFragment extends Fragment
     private TextView tvDetailDiskJockey1;
     private TextView tvDetailDiskJockey2;
     private TextView tvDetailDiskJockey3;
+    private Button btnFindBOB;
+    private Button btnImBOB;
+    private OnBobAtPartyListener _obapListener;
 
 
     //arguments for new PartyDetailsFragment
@@ -93,6 +98,26 @@ public class PartyDetailsFragment extends Fragment
         tvDetailDiskJockey3 = (TextView) v.findViewById(R.id.tvDetailDiskJockey3);
         tvDetailDiskJockey3.setText(getArguments().getString(ARG_DETAIL_DISKJOCKEY3));
 
+        btnFindBOB = (Button) v.findViewById(R.id.btnFindBOB);
+        btnFindBOB.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                //Send partyID to PartyDetailActivity to show all Bobs of 1 party
+                _obapListener.onBobAtParty(getArguments().getInt(ARG_DETAIL_ID));
+            }
+        });
+
+        btnImBOB = (Button) v.findViewById(R.id.btnImBOB);
+        btnImBOB.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+
+            }
+        });
 
         return v;
     }
@@ -124,4 +149,21 @@ public class PartyDetailsFragment extends Fragment
         pdfrag.setArguments(args);
         return pdfrag;
     }
-   }
+
+
+    public interface OnBobAtPartyListener
+    {
+        public void onBobAtParty(int partyID);
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try { _obapListener = (OnBobAtPartyListener) activity; }
+        catch (ClassCastException ccEx) { throw new ClassCastException(activity.toString() + " must implement OnBobAtPartyListener"); }
+    }
+}

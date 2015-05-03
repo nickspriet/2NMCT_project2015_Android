@@ -377,7 +377,6 @@ public class MapsActivity extends FragmentActivity
         intent.putExtra(PartyDetailsActivity.EXTRA_POSITION, party.getID());
 
         startActivity(intent);
-        finish();
     }
 
     private void showAddNewPartyFragment(View v)

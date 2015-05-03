@@ -43,4 +43,12 @@ public class Contract
         public static final String COLUMN_BOB_LATITUDE = "bob_latitude";
         public static final String COLUMN_BOB_LONGITUDE= "bob_longitude";
     }
+
+
+    //tabel Parties_Bobs
+    public interface PartyBobColumns extends BaseColumns
+    {
+        public static final String COLUMN_PARTYBOB_PARTYID = "partybob_partyid";
+        public static final String COLUMN_PARTYBOB_BOBID =" partybob_bobid";
+    }
 }

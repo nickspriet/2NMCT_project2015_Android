@@ -3,6 +3,10 @@ package be.howest.nmct.bob;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.LoaderManager;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
@@ -16,6 +20,7 @@ import be.howest.nmct.bob.admin.PartyAdmin;
 
 
 public class PartyDetailsActivity extends FragmentActivity
+    implements PartyDetailsFragment.OnBobAtPartyListener
 {
     public static String EXTRA_POSITION = "be.howest.nmct.bob.EXTRA_POSITION";
     private PartyDetailsFragmentAdapter _pdfAdpater;
@@ -97,5 +102,17 @@ public class PartyDetailsActivity extends FragmentActivity
         {
             return PartyAdmin.getParties().size();
         }
+    }
+
+
+    @Override
+    public void onBobAtParty(int partyID)
+    {
+        //go to BobsAtPartyActivity and pass the partyID
+        Intent intent = new Intent(this, BobsAtPartyActivity.class);
+        intent.putExtra(BobsAtPartyActivity.EXTRA_PARTY_ID, partyID);
+
+        startActivity(intent);
+        finish();
     }
 }

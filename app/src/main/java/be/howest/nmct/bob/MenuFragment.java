@@ -186,6 +186,5 @@ public class MenuFragment extends ListFragment
         // the callback interface. If not, it throws an exception
         try { _omisListener = (OnMenuItemSelectedListener) activity; }
         catch (ClassCastException ccEx) { throw new ClassCastException(activity.toString() + " must implement OnMenuItemSelectedListener"); }
-
     }
 }
