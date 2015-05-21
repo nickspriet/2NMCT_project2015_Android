@@ -37,12 +37,15 @@ public class BobsAtPartyActivity extends Activity
     {
         Fragment bapFragment = new BobsAtPartyFragment(partyid);
 
-        getFragmentManager().popBackStack();
+        //getFragmentManager().popBackStack();
 
         getFragmentManager().beginTransaction()
                 .replace(R.id.bobcontainer, bapFragment)
-                .addToBackStack("ShowBobsAtPartyFragment")
                 .commit();
+
+        Bundle args = new Bundle();
+        args.putInt("VIEWPAGER_POSITION", partyid);
+        onSaveInstanceState(args);
 
         setTitle("BOBs @ " + PartyAdmin.getPartyByID(partyid).getName());
     }

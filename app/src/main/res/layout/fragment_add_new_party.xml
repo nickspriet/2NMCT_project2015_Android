@@ -247,7 +247,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="32dp"
-            android:text="DJ&apos;s"
+            android:text="DJ"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="#ff0f67b0"/>
 

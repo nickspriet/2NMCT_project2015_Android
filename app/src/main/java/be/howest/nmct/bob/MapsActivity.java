@@ -44,7 +44,8 @@ public class MapsActivity extends FragmentActivity
         LoaderManager.LoaderCallbacks<Cursor>,
         OnMapReadyCallback,
         MenuFragment.OnMenuItemSelectedListener,
-        PartiesFragment.OnPartySelectedListener
+        PartiesFragment.OnPartySelectedListener,
+        AddNewPartyFragment.OnPartySaveListener
 {
     private DrawerLayout _drawerLayout;
     private FloatingActionButton btnAddParty;
@@ -64,6 +65,9 @@ public class MapsActivity extends FragmentActivity
 
 
     public static final int REQUEST_DETAIL = 1;
+    private Loader<Cursor> _loader;
+    private boolean stopUpdatingGPS = false;
+    private Marker _partyMarker;
 
 
     @Override
@@ -101,6 +105,7 @@ public class MapsActivity extends FragmentActivity
         }
 
         changeStatusBarColor();
+        getLoaderManager();
     }
 
     private void changeStatusBarColor()
@@ -121,11 +126,14 @@ public class MapsActivity extends FragmentActivity
 
             getFragmentManager().beginTransaction()
                     .replace(R.id.mapcontainer, _mapFragment, "mapfrag")
-                    .addToBackStack("ShowMapFragment")
+                    //.addToBackStack("ShowMapFragment")
                     .commit();
 
             //set the callback on the fragment
             _mapFragment.getMapAsync(this);
+
+            fillAdapterWithPartyData();
+
 
             setTitle("BOB");
             btnAddParty.setVisibility(View.VISIBLE);
@@ -152,11 +160,24 @@ public class MapsActivity extends FragmentActivity
     {
         super.onStart();
 
+        _partiesFragment = new PartiesFragment();
+        _mapFragment = MapFragment.newInstance();
+        Fragment mapfrag = getFragmentManager().findFragmentById(R.id.mapcontainer);
+        if (mapfrag != null && mapfrag instanceof MapFragment) ((MapFragment)mapfrag).getMapAsync(this);
         fillAdapterWithPartyData();
-        _map = _mapFragment.getMap();
-        initOnMarkerDragListener();
     }
 
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+
+        _partiesFragment = new PartiesFragment();
+        _mapFragment = MapFragment.newInstance();
+        Fragment mapfrag = getFragmentManager().findFragmentById(R.id.mapcontainer);
+        if (mapfrag != null && mapfrag instanceof MapFragment) ((MapFragment)mapfrag).getMapAsync(this);
+        fillAdapterWithPartyData();
+    }
 
     private void fillAdapterWithPartyData()
     {
@@ -177,12 +198,14 @@ public class MapsActivity extends FragmentActivity
         _partiesFragment._pAdapter = new PartiesFragment.PartyAdapter(MapsActivity.this.getApplicationContext(), R.layout.row_party, null, columns, viewIds, 0);
 
         //activeer de loader
-        getLoaderManager().initLoader(0, null, MapsActivity.this);
+        getLoaderManager().restartLoader(0, null, MapsActivity.this);
     }
 
     @Override
     public void onMapReady(final GoogleMap googleMap)
     {
+        _map = googleMap;
+
         // Acquire a reference to the system Location Manager
         _locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
@@ -210,7 +233,11 @@ public class MapsActivity extends FragmentActivity
         // Register the listener with the Location Manager to receive location updates
         //_locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, _locationListener);
         //_locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, _locationListener);
+
+
+        initOnMarkerDragListener(googleMap);
     }
+
 
     private void addPartyMarkers(final GoogleMap googleMap)
     {
@@ -224,12 +251,12 @@ public class MapsActivity extends FragmentActivity
             if (bitmap.getWidth() >= bitmap.getHeight())
             {
                 bitmap = Bitmap.createBitmap(bitmap, bitmap.getWidth()/2 - bitmap.getHeight()/2, 0, bitmap.getHeight(), bitmap.getHeight());
-                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, false);
             }
             else
             {
                 bitmap = Bitmap.createBitmap(bitmap, 0, bitmap.getHeight()/2 - bitmap.getWidth()/2, bitmap.getWidth(), bitmap.getWidth());
-                bitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, false);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 90, 90, false);
             }
 
 
@@ -239,7 +266,7 @@ public class MapsActivity extends FragmentActivity
                     .snippet(party.getCity())
                     .icon(BitmapDescriptorFactory.fromBitmap(bitmap));
 
-            googleMap.addMarker(partyOptions);
+            _partyMarker = googleMap.addMarker(partyOptions);
         }
     }
 
@@ -253,21 +280,13 @@ public class MapsActivity extends FragmentActivity
                 tvLatitude.setText("Latitude: " + location.getLatitude());
                 tvLongitude.setText("Longitude: " + location.getLongitude());
 
-                //if (_lastKnownLocation != location)
-                //{
-                //marker updaten (= verwijderen en opnieuw toevoegen)
-                if (_myLocationMarker != null) _myLocationMarker.remove();
+                if (_lastKnownLocation == null || _myLocationMarker == null) return;
 
-                MarkerOptions options = new MarkerOptions()
-                        .position(new LatLng(location.getLatitude(), location.getLongitude()))
-                        .title("You are here")
-                        .draggable(true);
-
-                Log.d("NEW MARKER", options.getTitle());
-
-                _myLocationMarker = googleMap.addMarker(options);
-                _lastKnownLocation = location;
-                //}
+                if (!_lastKnownLocation.equals(location) && !stopUpdatingGPS)
+                {
+                    _myLocationMarker.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                    _lastKnownLocation = location;
+                }
             }
 
             @Override
@@ -302,7 +321,8 @@ public class MapsActivity extends FragmentActivity
             MarkerOptions options = new MarkerOptions()
                     .position(new LatLng(_lastKnownLocation.getLatitude(), _lastKnownLocation.getLongitude()))
                     .title("You are here")
-                    .draggable(true);
+                    .draggable(true)
+                    .icon(BitmapDescriptorFactory.defaultMarker(48.0f));
 
             Log.d("NEW MARKER", options.getTitle());
 
@@ -327,15 +347,16 @@ public class MapsActivity extends FragmentActivity
     }
 
 
-    private void initOnMarkerDragListener()
+    private void initOnMarkerDragListener(GoogleMap googleMap)
     {
-        _map.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener()
+        googleMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener()
         {
 
             @Override
             public void onMarkerDragStart(Marker marker)
             {
                 //stop de LocationListener met de locatie op te halen
+                stopUpdatingGPS = true;
                 if (_locationManager != null) _locationManager.removeUpdates(_locationListener);
             }
 
@@ -381,6 +402,8 @@ public class MapsActivity extends FragmentActivity
 
     private void showAddNewPartyFragment(View v)
     {
+        if (_myLocationMarker == null) return;
+
         //fragment ophalen
         AddNewPartyFragment anpFragment = new AddNewPartyFragment(_myLocationMarker);
 
@@ -426,8 +449,9 @@ public class MapsActivity extends FragmentActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor)
     {
+        _loader = loader;
         _partiesFragment._pAdapter.swapCursor(cursor);
-        addPartyMarkers(_map);
+        if (_map != null) addPartyMarkers(_map);
 
     }
 
@@ -435,6 +459,15 @@ public class MapsActivity extends FragmentActivity
     public void onLoaderReset(Loader<Cursor> loader)
     {
         _partiesFragment._pAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onPartySave(LatLng pos)
+    {
+        showMapFragment();
+        _map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(pos.latitude, pos.longitude), _zoomLevel));
+        _partyMarker.remove();
+        fillAdapterWithPartyData();
     }
     //endregion
 

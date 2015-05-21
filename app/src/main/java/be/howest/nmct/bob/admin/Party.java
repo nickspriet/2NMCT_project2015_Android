@@ -19,8 +19,8 @@ public class Party
     private String Address;
     private String Zipcode;
     private String City;
-    private Date FromDate;
-    private Date UntilDate;
+    private String FromDate;
+    private String UntilDate;
     private Double PricePresale;
     private Double PriceAtTheDoor;
     private String DiskJockey1;
@@ -32,7 +32,7 @@ public class Party
     private Uri ImgURI;
 
     //constructor
-    public Party(int id, String name, String description, byte[] picture, String address, String zipcode, String city, Date fromDate, Date untilDate, Double pricePresale, Double priceAtTheDoor, String diskJockey1, String diskJockey2, String diskJockey3, Double latitude, Double longitude)
+    public Party(int id, String name, String description, byte[] picture, String address, String zipcode, String city, String fromDate, String untilDate, Double pricePresale, Double priceAtTheDoor, String diskJockey1, String diskJockey2, String diskJockey3, Double latitude, Double longitude)
     {
         ID = id;
         Name = name;
@@ -94,12 +94,12 @@ public class Party
         return City;
     }
 
-    public Date getFromDate()
+    public String getFromDate()
     {
         return FromDate;
     }
 
-    public Date getUntilDate()
+    public String getUntilDate()
     {
         return UntilDate;
     }
@@ -176,12 +176,12 @@ public class Party
         City = city;
     }
 
-    public void setFromDate(Date fromDate)
+    public void setFromDate(String fromDate)
     {
         FromDate = fromDate;
     }
 
-    public void setUntilDate(Date untilDate)
+    public void setUntilDate(String untilDate)
     {
         UntilDate = untilDate;
     }
@@ -225,5 +225,6 @@ public class Party
 
     public Uri getImgURI() { return ImgURI; }
     public void setImgURI(Uri imgURI) { ImgURI = imgURI; }
+
 
 }

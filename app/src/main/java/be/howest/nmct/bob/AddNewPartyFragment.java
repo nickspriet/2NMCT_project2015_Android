@@ -35,10 +35,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -60,6 +64,7 @@ public class AddNewPartyFragment extends Fragment
         implements
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener
+
 {
     private ImageView imgPartyPicture;
     private EditText etPartyName;
@@ -93,6 +98,8 @@ public class AddNewPartyFragment extends Fragment
     private double _long;
     private Bitmap _imgBitmap;
     private String mCurrentPhotoPath;
+    private OnPartySaveListener _opsListener;
+
 
     //constructor
     public AddNewPartyFragment()
@@ -174,6 +181,8 @@ public class AddNewPartyFragment extends Fragment
 
                 //upload image to server
                 new UploadPictureTask().execute(_imgBitmap);
+
+                _opsListener.onPartySave(new LatLng(_lat, _long));
             }
         });
 
@@ -244,17 +253,9 @@ public class AddNewPartyFragment extends Fragment
                 newParty.setZipcode(etZipcode.getText().toString());
                 newParty.setCity(etCity.getText().toString());
 
-                try
-                {
-                    SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
-
-                    newParty.setFromDate(dateformat.parse(etFrom.getText().toString()));
-                    newParty.setUntilDate(dateformat.parse(etUntil.getText().toString()));
-                }
-                catch (ParseException e)
-                {
-                    e.printStackTrace();
-                }
+                //SimpleDateFormat dateformat = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
+                newParty.setFromDate(etFrom.getText().toString());
+                newParty.setUntilDate(etUntil.getText().toString());
 
 
                 if (!etPresale.getText().toString().isEmpty()) newParty.setPricePresale(Double.parseDouble(etPresale.getText().toString()));
@@ -338,6 +339,8 @@ public class AddNewPartyFragment extends Fragment
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -432,12 +435,6 @@ public class AddNewPartyFragment extends Fragment
 //        return anpFragment;
 //    }
 
-
-    @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-    }
 
 
     @Override
@@ -535,8 +532,17 @@ public class AddNewPartyFragment extends Fragment
         @Override
         protected Boolean doInBackground(Bitmap... params)
         {
-            if (UploadImage(params[0]) != null) return true;
-            else return false;
+            try
+            {
+                if (uploadImage(params[0]) != null) return true;
+                else return false;
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+            return true;
         }
 
         @Override
@@ -546,10 +552,28 @@ public class AddNewPartyFragment extends Fragment
         }
     }
 
-    private String UploadImage(Bitmap param)
+    private String uploadImage(Bitmap param) throws IOException
     {
-        String result = NetworkUtils.uploadImage("https://student.howest.be/nick.spriet/BOB/uploadimage.php", param, mCurrentPhotoPath);
+        String result = NetworkUtils.uploadImage("https://student.howest.be/nick.spriet/BOB/uploadimage.php", _imgBitmap, mCurrentPhotoPath);
         return result;
+    }
+
+
+
+    public interface OnPartySaveListener
+    {
+        public void onPartySave(LatLng pos);
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try { _opsListener = (OnPartySaveListener) activity; }
+        catch (ClassCastException ccEx) { throw new ClassCastException(activity.toString() + " must implement OnPartySaveListener"); }
     }
 }
 

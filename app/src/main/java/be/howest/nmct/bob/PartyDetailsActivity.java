@@ -45,6 +45,14 @@ public class PartyDetailsActivity extends FragmentActivity
         //change title of actionbar to Party Name
         getActionBar().setTitle(PartyAdmin.getPartyByID(getIntent().getIntExtra(EXTRA_POSITION, 0)).getName());
 
+        if (savedInstanceState != null)
+        {
+            int pos = savedInstanceState.getInt("VIEWPAGER_POSITION");
+            _viewPager.setCurrentItem(pos);
+            getActionBar().setTitle(PartyAdmin.getPartyByID(pos).getName());
+        }
+
+
         _viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override
@@ -86,6 +94,7 @@ public class PartyDetailsActivity extends FragmentActivity
         public PartyDetailsFragmentAdapter(FragmentManager fm)
         {
             super(fm);
+            fm.beginTransaction().addToBackStack("PartyDetailsFragment");
         }
 
         @Override
@@ -113,6 +122,6 @@ public class PartyDetailsActivity extends FragmentActivity
         intent.putExtra(BobsAtPartyActivity.EXTRA_PARTY_ID, partyID);
 
         startActivity(intent);
-        finish();
+        //finish();
     }
 }

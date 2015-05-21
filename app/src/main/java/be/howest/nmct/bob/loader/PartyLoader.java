@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -113,8 +114,8 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                     String address = "";
                     String zipcode = "";
                     String city = "";
-                    Date fromdate = null;
-                    Date untildate = null;
+                    String fromdate = null;
+                    String untildate = null;
                     Double pricepresale = 0.0;
                     Double priceatthedoor = 0.0;
                     String diskjockey1 = "";
@@ -134,6 +135,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
 
                                 //picture ophalen van de server adhv het id (bv. 0.png, 1.png, ...)
                                 picture = getPictureFromPartyID(partyid);
+                                if (picture == null) picture = getPictureFromPartyID(-1);
                                 break;
 
                             case "Name":
@@ -162,7 +164,9 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                                 break;
 
                             case "FromDate":
-                                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                fromdate = reader.nextString();
+
+                                /*SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
                                 try
                                 {
                                     fromdate = format.parse(reader.nextString());
@@ -170,11 +174,12 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                                 catch (ParseException ex)
                                 {
                                     Log.d("parseEX", ex.getMessage());
-                                }
+                                }*/
                                 break;
 
                             case "UntilDate":
-                                SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                untildate = reader.nextString();
+                               /* SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy - HH:mm");
                                 try
                                 {
                                     untildate = format2.parse(reader.nextString());
@@ -182,7 +187,7 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
                                 catch (ParseException ex)
                                 {
                                     Log.d("parseEX", ex.getMessage());
-                                }
+                                }*/
                                 break;
 
                             case "PricePresale":
@@ -280,12 +285,24 @@ public class PartyLoader extends AsyncTaskLoader<Cursor>
         }
     }
 
-    private byte[] getPictureFromPartyID(int partyid) throws IOException
+    private byte[] getPictureFromPartyID(int partyid)
     {
-        URL imageURL = new URL(serverURL + "images/" + partyid + ".jpg");
-        Bitmap bmPicture = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
+        try
+        {
+            URL imageURL = new URL(serverURL + "images/" + partyid + ".jpg");
+            Bitmap bmPicture = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bmPicture.compress(Bitmap.CompressFormat.PNG, 0, stream);
+            return stream.toByteArray();
+        }
+        catch (MalformedURLException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -12,6 +12,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -55,7 +56,7 @@ public class NetworkUtils
         HttpClient httpclient = new DefaultHttpClient();
         HttpPost httppost = new HttpPost(url);
 
-        try
+            try
         {
             // Add your data
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
@@ -164,6 +165,7 @@ public class NetworkUtils
                 serverResponseCode = conn.getResponseCode();
                 String serverResponseMessage = conn.getResponseMessage();
 
+                //conn.getInputStream()
                 Log.i("uploadFile", "HTTP Response is : " + serverResponseMessage + ": " + serverResponseCode);
 
                 //close the streams //

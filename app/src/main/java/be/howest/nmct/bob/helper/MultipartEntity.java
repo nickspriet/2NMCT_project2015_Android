@@ -105,7 +105,7 @@ public class MultipartEntity implements HttpEntity
         }
         catch (final IOException e)
         {
-
+            e.printStackTrace();
         }
         finally
         {
